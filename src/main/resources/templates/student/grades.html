@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grades - SCMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem 0;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+        }
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .main-content {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .grade-a { color: #28a745; }
+        .grade-b { color: #17a2b8; }
+        .grade-c { color: #ffc107; }
+        .grade-d { color: #fd7e14; }
+        .grade-f { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">Student Portal</h4>
+                        <p class="text-white-50 small" th:text="${student.name}">Student Name</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" th:href="@{/student/dashboard(studentId=${student.id})}">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" th:href="@{/student/courses(studentId=${student.id})}">
+                                <i class="fas fa-book me-2"></i>
+                                Courses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" th:href="@{/student/grades(studentId=${student.id})}">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Grades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <i class="fas fa-home me-2"></i>
+                                Home
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">My Grades</h1>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                                <h3 class="text-primary" th:text="${#numbers.formatDecimal(gpa, 1, 2)}">0.00</h3>
+                                <h5>Current GPA</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-book fa-3x text-success mb-3"></i>
+                                <h3 class="text-success" th:text="${grades.size()}">0</h3>
+                                <h5>Total Grades</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-graduate fa-3x text-info mb-3"></i>
+                                <h3 class="text-info" th:text="${student.name}">Student Name</h3>
+                                <h5>Student</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list me-2"></i>Grade Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${grades.isEmpty()}" class="text-center text-muted py-5">
+                            <i class="fas fa-info-circle fa-3x mb-3"></i>
+                            <h4>No grades recorded yet</h4>
+                            <p>Your grades will appear here once they are recorded by your instructors.</p>
+                        </div>
+                        
+                        <div th:if="${!grades.isEmpty()}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Grade</th>
+                                        <th>Score</th>
+                                        <th>Comments</th>
+                                        <th>Date Recorded</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="grade : ${grades}">
+                                        <td>
+                                            <strong th:text="${grade.course.title}">Course Title</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge fs-6" 
+                                                  th:classappend="${grade.score >= 90 ? 'bg-success' : 
+                                                                  grade.score >= 80 ? 'bg-info' : 
+                                                                  grade.score >= 70 ? 'bg-warning' : 
+                                                                  grade.score >= 60 ? 'bg-orange' : 'bg-danger'}"
+                                                  th:text="${grade.score >= 90 ? 'A' : 
+                                                           grade.score >= 80 ? 'B' : 
+                                                           grade.score >= 70 ? 'C' : 
+                                                           grade.score >= 60 ? 'D' : 'F'}">A</span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#numbers.formatDecimal(grade.score, 1, 1)}">95.0</span>%
+                                        </td>
+                                        <td>
+                                            <span th:text="${grade.comments != null ? grade.comments : 'No comments'}">Comments</span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted" th:text="${#temporals.format(grade.recordedDate, 'MMM dd, yyyy')}">Jan 01, 2024</small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-pie me-2"></i>Grade Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${grades.isEmpty()}" class="text-center text-muted">
+                                    <p>No grades to display</p>
+                                </div>
+                                <div th:if="${!grades.isEmpty()}" class="row text-center">
+                                    <div class="col-3">
+                                        <div class="grade-a">
+                                            <h4 th:text="${grades.?[score >= 90].size()}">0</h4>
+                                            <small>A (90-100%)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="grade-b">
+                                            <h4 th:text="${grades.?[score >= 80 and score < 90].size()}">0</h4>
+                                            <small>B (80-89%)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="grade-c">
+                                            <h4 th:text="${grades.?[score >= 70 and score < 80].size()}">0</h4>
+                                            <small>C (70-79%)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="grade-d">
+                                            <h4 th:text="${grades.?[score >= 60 and score < 70].size()}">0</h4>
+                                            <small>D (60-69%)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-info-circle me-2"></i>Academic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Student ID:</strong> <span th:text="${student.id}">1</span></p>
+                                <p><strong>Email:</strong> <span th:text="${student.email}">student@email.com</span></p>
+                                <p><strong>Current GPA:</strong> <span th:text="${#numbers.formatDecimal(gpa, 1, 2)}">0.00</span></p>
+                                <p><strong>Total Courses:</strong> <span th:text="${grades.size()}">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

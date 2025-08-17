@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,22 +22,43 @@ public class EnrollmentController {
     
     @PostMapping("/enroll")
     @Operation(summary = "Enroll a student in a course")
-    public ResponseEntity<Enrollment> enrollStudent(@RequestBody Map<String, Long> request) {
+    public ResponseEntity<Map<String, Object>> enrollStudent(@RequestBody Map<String, Long> request) {
         Long studentId = request.get("studentId");
         Long courseId = request.get("courseId");
         
-        Enrollment enrollment = enrollmentService.enrollStudent(studentId, courseId);
-        return ResponseEntity.ok(enrollment);
+        try {
+            Enrollment enrollment = enrollmentService.enrollStudent(studentId, courseId);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Successfully enrolled in course");
+            response.put("enrollment", enrollment);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
     
     @PostMapping("/withdraw")
     @Operation(summary = "Withdraw a student from a course")
-    public ResponseEntity<?> withdrawStudent(@RequestBody Map<String, Long> request) {
+    public ResponseEntity<Map<String, Object>> withdrawStudent(@RequestBody Map<String, Long> request) {
         Long studentId = request.get("studentId");
         Long courseId = request.get("courseId");
         
-        enrollmentService.withdrawStudent(studentId, courseId);
-        return ResponseEntity.ok(Map.of("message", "Student withdrawn successfully"));
+        try {
+            enrollmentService.withdrawStudent(studentId, courseId);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Student withdrawn successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
     
     @GetMapping("/student/{studentId}")

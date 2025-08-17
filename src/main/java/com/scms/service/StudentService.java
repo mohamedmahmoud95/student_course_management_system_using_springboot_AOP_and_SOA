@@ -45,6 +45,19 @@ public class StudentService {
         return studentRepository.save(student);
     }
     
+    public Student createStudent(Student student) {
+        if (studentRepository.existsByEmail(student.getEmail())) {
+            throw new RuntimeException("Student with email " + student.getEmail() + " already exists");
+        }
+        
+        // Encode password if not already encoded
+        if (!student.getPassword().startsWith("$2a$")) {
+            student.setPassword(passwordEncoder.encode(student.getPassword()));
+        }
+        
+        return studentRepository.save(student);
+    }
+    
     public Optional<Student> authenticateStudent(String email, String password) {
         Optional<Student> studentOpt = studentRepository.findByEmail(email);
         if (studentOpt.isPresent()) {

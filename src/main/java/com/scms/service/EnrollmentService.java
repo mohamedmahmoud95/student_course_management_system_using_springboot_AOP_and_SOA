@@ -138,4 +138,20 @@ public class EnrollmentService {
         }
         return false;
     }
+    
+    public void updateEnrollmentStatus(Long enrollmentId, String status) {
+        Optional<Enrollment> enrollmentOpt = enrollmentRepository.findById(enrollmentId);
+        if (enrollmentOpt.isEmpty()) {
+            throw new RuntimeException("Enrollment not found");
+        }
+        
+        Enrollment enrollment = enrollmentOpt.get();
+        try {
+            Enrollment.EnrollmentStatus enrollmentStatus = Enrollment.EnrollmentStatus.valueOf(status.toUpperCase());
+            enrollment.setStatus(enrollmentStatus);
+            enrollmentRepository.save(enrollment);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid enrollment status: " + status);
+        }
+    }
 }

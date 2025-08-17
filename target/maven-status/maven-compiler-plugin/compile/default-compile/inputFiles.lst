@@ -5,6 +5,7 @@
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/aspect/SecurityAspect.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/StudentRepository.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/StudentService.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/AdminController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/ScmsApplication.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/NotificationService.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/EnrollmentRepository.java

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Controller
 public class WebController {
@@ -106,6 +107,21 @@ public class WebController {
         return "student/grades";
     }
     
+    @GetMapping("/student/notifications")
+    public String studentNotifications(@RequestParam Long studentId, Model model) {
+        Student student = studentService.getStudentById(studentId).orElse(null);
+        if (student == null) {
+            return "redirect:/login";
+        }
+        
+        List<com.scms.entity.Notification> notifications = notificationService.getStudentNotifications(studentId);
+        
+        model.addAttribute("student", student);
+        model.addAttribute("notifications", notifications);
+        
+        return "student/notifications";
+    }
+    
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model) {
         List<Student> students = studentService.getAllStudents();
@@ -124,7 +140,16 @@ public class WebController {
     @GetMapping("/admin/students")
     public String adminStudents(Model model) {
         List<Student> students = studentService.getAllStudents();
+        
+        // Calculate GPA for each student
+        Map<Long, BigDecimal> studentGPAs = new HashMap<>();
+        for (Student student : students) {
+            BigDecimal gpa = studentService.calculateStudentGPA(student.getId());
+            studentGPAs.put(student.getId(), gpa);
+        }
+        
         model.addAttribute("students", students);
+        model.addAttribute("studentGPAs", studentGPAs);
         return "admin/students";
     }
     

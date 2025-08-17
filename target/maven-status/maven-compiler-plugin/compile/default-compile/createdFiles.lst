@@ -31,4 +31,5 @@ com/scms/service/StudentService.class
 com/scms/entity/Notification$NotificationType.class
 com/scms/entity/Grade.class
 com/scms/entity/Enrollment.class
+com/scms/controller/AdminController.class
 com/scms/aspect/ExceptionHandlingAspect.class
