@@ -23,20 +23,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/", "/login", "/register", "/h2-console/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/swagger-resources/**", "/webjars/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/student/**", "/admin/**").permitAll()
                 .requestMatchers("/api/students/**").permitAll()
                 .requestMatchers("/api/courses/**").permitAll()
                 .requestMatchers("/api/enrollments/**").permitAll()
                 .requestMatchers("/api/grades/**").permitAll()
                 .requestMatchers("/api/administrators/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/student/**").hasRole("STUDENT")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/")
-                .permitAll()
-            )
+            .formLogin(form -> form.disable())
             .logout(logout -> logout
                 .logoutSuccessUrl("/")
                 .permitAll()
