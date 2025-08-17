@@ -298,11 +298,17 @@
                 return;
             }
             
-            // Get students enrolled in the selected course
+            // Get enrollments for the selected course
             fetch(`/api/enrollments/course/${courseId}`)
                 .then(response => response.json())
                 .then(enrollments => {
-                    const studentIds = enrollments.map(e => e.student.id);
+                    // Extract student IDs from enrollments
+                    const studentIds = enrollments.map(e => e.studentId).filter(id => id);
+                    
+                    if (studentIds.length === 0) {
+                        displayStudentsInDropdown([]);
+                        return;
+                    }
                     
                     // Get all students and filter by enrollment
                     return fetch('/api/students')

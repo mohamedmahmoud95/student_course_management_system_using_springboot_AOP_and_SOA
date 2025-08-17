@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebController {
@@ -75,9 +77,15 @@ public class WebController {
         List<Course> availableCourses = courseService.getAvailableCourses();
         List<Enrollment> studentEnrollments = enrollmentService.getStudentEnrollments(studentId);
         
+        // Create a set of course IDs that the student is already enrolled in
+        Set<Long> enrolledCourseIds = studentEnrollments.stream()
+            .map(enrollment -> enrollment.getCourse().getId())
+            .collect(Collectors.toSet());
+        
         model.addAttribute("student", student);
         model.addAttribute("availableCourses", availableCourses);
         model.addAttribute("studentEnrollments", studentEnrollments);
+        model.addAttribute("enrolledCourseIds", enrolledCourseIds);
         
         return "student/courses";
     }
@@ -106,10 +114,10 @@ public class WebController {
             return "redirect:/login";
         }
         
-        // List<com.scms.entity.Notification> notifications = notificationService.getStudentNotifications(studentId); // Temporarily disabled
+        List<com.scms.entity.Notification> notifications = notificationService.getStudentNotifications(studentId);
         
         model.addAttribute("student", student);
-        model.addAttribute("notifications", List.of()); // Empty list temporarily
+        model.addAttribute("notifications", notifications);
         
         return "student/notifications";
     }

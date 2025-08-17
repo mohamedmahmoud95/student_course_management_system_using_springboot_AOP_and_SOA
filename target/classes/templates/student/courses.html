@@ -111,11 +111,24 @@
                                                 </p>
                                             </div>
                                             <div class="col-md-4 text-end">
-                                                <button class="btn btn-primary" 
+                                                <!-- Show enroll button only if student is not already enrolled -->
+                                                <button th:if="${!enrolledCourseIds.contains(course.id)}" 
+                                                        class="btn btn-primary" 
                                                         th:onclick="'enrollInCourse(' + ${course.id} + ', ' + ${student.id} + ')'">
                                                     <i class="fas fa-plus me-1"></i>
                                                     Enroll
                                                 </button>
+                                                
+                                                <!-- Show status indicator if student is already enrolled -->
+                                                <div th:if="${enrolledCourseIds.contains(course.id)}" class="d-flex flex-column align-items-end">
+                                                    <span class="badge bg-success mb-1">
+                                                        <i class="fas fa-check me-1"></i>
+                                                        Already Enrolled
+                                                    </span>
+                                                    <small class="text-muted">
+                                                        Check "My Enrollments" for details
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

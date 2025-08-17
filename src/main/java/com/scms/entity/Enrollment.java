@@ -1,6 +1,7 @@
 package com.scms.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -14,12 +15,12 @@ public class Enrollment {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Student student;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Course course;
     
     @Column(nullable = false)
@@ -82,5 +83,14 @@ public class Enrollment {
     
     public void setStatus(EnrollmentStatus status) {
         this.status = status;
+    }
+    
+    // Add getters for IDs to be used in JSON responses
+    public Long getStudentId() {
+        return student != null ? student.getId() : null;
+    }
+    
+    public Long getCourseId() {
+        return course != null ? course.getId() : null;
     }
 }
