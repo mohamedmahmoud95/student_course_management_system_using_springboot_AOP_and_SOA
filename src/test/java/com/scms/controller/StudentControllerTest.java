@@ -3,11 +3,16 @@ package com.scms.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scms.entity.Student;
 import com.scms.service.StudentService;
+import com.scms.service.EnrollmentService;
+import com.scms.service.GradeService;
+import com.scms.service.NotificationService;
+import com.scms.config.TestSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StudentController.class)
+@Import(TestSecurityConfig.class)
 class StudentControllerTest {
 
     @Autowired

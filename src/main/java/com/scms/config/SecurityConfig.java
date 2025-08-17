@@ -22,6 +22,11 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/", "/login", "/register", "/h2-console/**", "/swagger-ui/**", "/api-docs/**").permitAll()
+                .requestMatchers("/api/students/**").permitAll()
+                .requestMatchers("/api/courses/**").permitAll()
+                .requestMatchers("/api/enrollments/**").permitAll()
+                .requestMatchers("/api/grades/**").permitAll()
+                .requestMatchers("/api/administrators/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/student/**").hasRole("STUDENT")
                 .anyRequest().authenticated()
@@ -36,7 +41,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**")
+                .ignoringRequestMatchers("/h2-console/**", "/api/**")
             )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
