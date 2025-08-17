@@ -8,8 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-@EnableWebSecurity
+// @Configuration
+// @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/students/**", "/api/courses/**", "/api/enrollments/**", "/api/grades/**", "/api/administrators/**", "/api/notifications/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/admin/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form.disable())

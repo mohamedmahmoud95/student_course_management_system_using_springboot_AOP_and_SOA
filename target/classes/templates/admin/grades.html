@@ -138,7 +138,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="grade : ${grades}">
+                                    <tr th:each="grade : ${grades}" th:attr="data-grade-id=${grade.id}">
                                         <td th:text="${grade.id}">1</td>
                                         <td th:text="${grade.student.name}">Student Name</td>
                                         <td th:text="${grade.course.title}">Course Title</td>
@@ -244,6 +244,26 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="updateGrade()">Update Grade</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Grade Details Modal -->
+    <div class="modal fade" id="gradeDetailsModal" tabindex="-1" aria-labelledby="gradeDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gradeDetailsModalLabel">
+                        <i class="fas fa-eye me-2"></i>Grade Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Content will be dynamically loaded -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -406,15 +426,51 @@
         }
         
         function viewGrade(gradeId) {
-            fetch(`/api/grades/${gradeId}`)
-                .then(response => response.json())
-                .then(data => {
-                    alert(`Grade Details:\nID: ${data.id}\nStudent: ${data.student.name}\nCourse: ${data.course.title}\nScore: ${data.score}\nComments: ${data.comments || 'None'}\nDate: ${new Date(data.recordedDate).toLocaleDateString()}`);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading grade details');
-                });
+            // Find the grade data from the current page
+            const row = document.querySelector(`tr[data-grade-id="${gradeId}"]`);
+            if (row) {
+                const studentName = row.querySelector('td:nth-child(2)').textContent;
+                const courseName = row.querySelector('td:nth-child(3)').textContent;
+                const score = row.querySelector('td:nth-child(4)').textContent;
+                const comments = row.querySelector('td:nth-child(5)').textContent;
+                const recordedDate = row.querySelector('td:nth-child(6)').textContent;
+                
+                const modal = document.getElementById('gradeDetailsModal');
+                const modalBody = modal.querySelector('.modal-body');
+                
+                modalBody.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-id-badge text-primary"></i> Grade ID</h6>
+                            <p class="mb-3">${gradeId}</p>
+                            
+                            <h6><i class="fas fa-user-graduate text-success"></i> Student</h6>
+                            <p class="mb-3">${studentName}</p>
+                            
+                            <h6><i class="fas fa-book text-info"></i> Course</h6>
+                            <p class="mb-3">${courseName}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-chart-line text-warning"></i> Score</h6>
+                            <p class="mb-3"><span class="badge bg-primary">${score}</span></p>
+                            
+                            <h6><i class="fas fa-calendar text-secondary"></i> Recorded Date</h6>
+                            <p class="mb-3">${recordedDate}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h6><i class="fas fa-comment text-muted"></i> Comments</h6>
+                            <p class="mb-3">${comments || 'No comments provided'}</p>
+                        </div>
+                    </div>
+                `;
+                
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            } else {
+                alert('Grade details not found on current page');
+            }
         }
         
         function editGrade(gradeId, score, comments) {

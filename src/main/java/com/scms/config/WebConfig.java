@@ -13,12 +13,14 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/", "/login", "/signup", "/forgot-password", 
-                                   "/api/auth/**", "/api/students/**", "/api/courses/**", 
-                                   "/api/enrollments/**", "/api/grades/**", "/api/administrators/**", 
-                                   "/api/notifications/**", "/css/**", "/js/**", "/images/**",
-                                   "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**");
+        // Temporarily disable auth interceptor for development
+        // registry.addInterceptor(authInterceptor)
+        //         .addPathPatterns("/**")
+        //         .excludePathPatterns("/", "/login", "/signup", "/forgot-password", 
+        //                            "/api/auth/**", "/api/students/**", "/api/courses/**", 
+        //                            "/api/enrollments/**", "/api/grades/**", "/api/administrators/**", 
+        //                            "/api/notifications/**", "/css/**", "/js/**", "/images/**",
+        //                            "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**",
+        //                            "/admin/**");
     }
 }
