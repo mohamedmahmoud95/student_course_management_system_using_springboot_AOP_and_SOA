@@ -1,4 +1,4 @@
-# Use OpenJDK 17 as base image
+# Use OpenJDK 17 slim image
 FROM openjdk:17-jdk-slim
 
 # Set working directory
@@ -12,7 +12,7 @@ COPY pom.xml .
 # Make mvnw executable
 RUN chmod +x mvnw
 
-# Download dependencies
+# Download dependencies (this layer will be cached if pom.xml doesn't change)
 RUN ./mvnw dependency:go-offline -B
 
 # Copy source code
@@ -20,9 +20,6 @@ COPY src src
 
 # Build the application
 RUN ./mvnw clean package -DskipTests
-
-# Expose port 8080
-EXPOSE 8080
 
 # Run the application
 CMD ["java", "-jar", "target/student-course-management-system-0.0.1-SNAPSHOT.jar"]
