@@ -151,9 +151,33 @@ public class WebController {
                 }
             }
             
+            // Calculate statistics for the cards
+            int totalStudents = students.size();
+            int totalEnrollments = studentEnrollmentCounts.values().stream().mapToInt(Integer::intValue).sum();
+            
+            // Calculate average GPA
+            BigDecimal totalGPA = studentGPAs.values().stream()
+                .filter(gpa -> gpa.compareTo(BigDecimal.ZERO) > 0)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            int studentsWithGrades = (int) studentGPAs.values().stream()
+                .filter(gpa -> gpa.compareTo(BigDecimal.ZERO) > 0)
+                .count();
+            BigDecimal averageGPA = studentsWithGrades > 0 ? 
+                totalGPA.divide(BigDecimal.valueOf(studentsWithGrades), 2, BigDecimal.ROUND_HALF_UP) : 
+                BigDecimal.ZERO;
+            
+            // Count active students (students with enrollments)
+            int activeStudents = (int) studentEnrollmentCounts.values().stream()
+                .filter(count -> count > 0)
+                .count();
+            
             model.addAttribute("students", students);
             model.addAttribute("studentGPAs", studentGPAs);
             model.addAttribute("studentEnrollmentCounts", studentEnrollmentCounts);
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("totalEnrollments", totalEnrollments);
+            model.addAttribute("averageGPA", averageGPA);
+            model.addAttribute("activeStudents", activeStudents);
             return "admin/students";
         } catch (Exception e) {
             e.printStackTrace();

@@ -59,7 +59,7 @@ public class AuthController {
             
             if ("student".equals(userType)) {
                 Student student = studentService.findByEmail(email);
-                if (student != null && passwordEncoder.matches(password, student.getPassword())) {
+                if (student != null && password.equals(student.getPassword())) {
                     session.setAttribute("userType", "student");
                     session.setAttribute("userId", student.getId());
                     session.setAttribute("userName", student.getName());
@@ -71,7 +71,7 @@ public class AuthController {
                 }
             } else if ("admin".equals(userType)) {
                 Administrator admin = administratorService.findByEmail(email);
-                if (admin != null && passwordEncoder.matches(password, admin.getPassword())) {
+                if (admin != null && password.equals(admin.getPassword())) {
                     session.setAttribute("userType", "admin");
                     session.setAttribute("userId", admin.getId());
                     session.setAttribute("userName", admin.getName());
@@ -115,7 +115,6 @@ public class AuthController {
                 return ResponseEntity.badRequest().body(response);
             }
             
-            student.setPassword(passwordEncoder.encode(student.getPassword()));
             Student savedStudent = studentService.createStudent(student);
             
             response.put("success", true);

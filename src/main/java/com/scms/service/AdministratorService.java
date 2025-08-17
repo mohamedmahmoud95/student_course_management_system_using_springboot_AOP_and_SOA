@@ -56,7 +56,7 @@ public class AdministratorService {
         Optional<Administrator> adminOpt = administratorRepository.findByEmail(email);
         if (adminOpt.isPresent()) {
             Administrator administrator = adminOpt.get();
-            if (passwordEncoder.matches(password, administrator.getPassword())) {
+            if (password.equals(administrator.getPassword())) {
                 return Optional.of(administrator);
             }
         }

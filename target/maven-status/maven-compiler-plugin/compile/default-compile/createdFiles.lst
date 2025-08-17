@@ -1,5 +1,6 @@
 com/scms/repository/CourseRepository.class
 com/scms/controller/GradeController.class
+com/scms/entity/AdminNotification$AdminNotificationType.class
 com/scms/service/GradeService.class
 com/scms/entity/Course.class
 com/scms/controller/WebController.class
@@ -10,10 +11,13 @@ com/scms/config/WebConfig.class
 com/scms/controller/StudentController.class
 com/scms/controller/EnrollmentController.class
 com/scms/repository/GradeRepository.class
+com/scms/repository/AdminNotificationRepository.class
 com/scms/service/CourseService.class
+com/scms/entity/AdminNotification.class
 com/scms/entity/Grade.class
 com/scms/entity/Enrollment.class
 com/scms/controller/AdminController.class
+com/scms/service/AdminNotificationService.class
 com/scms/service/EnrollmentService.class
 com/scms/config/AuthInterceptor.class
 com/scms/aspect/PerformanceMonitoringAspect.class

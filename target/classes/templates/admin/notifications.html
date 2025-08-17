@@ -148,11 +148,17 @@
                                 <label for="typeFilter" class="form-label">Filter by Type</label>
                                 <select class="form-select" id="typeFilter" onchange="filterNotifications()">
                                     <option value="">All Types</option>
-                                    <option value="ENROLLMENT">Enrollment</option>
-                                    <option value="GRADE_UPDATE">Grade Update</option>
-                                    <option value="COURSE_UPDATE">Course Update</option>
-                                    <option value="SYSTEM">System</option>
-                                    <option value="WITHDRAWAL">Withdrawal</option>
+                                    <option value="PENDING_ENROLLMENT_REQUEST">Pending Enrollment Request</option>
+                                    <option value="PENDING_WITHDRAWAL_REQUEST">Pending Withdrawal Request</option>
+                                    <option value="ENROLLMENT_APPROVED">Enrollment Approved</option>
+                                    <option value="ENROLLMENT_REJECTED">Enrollment Rejected</option>
+                                    <option value="WITHDRAWAL_APPROVED">Withdrawal Approved</option>
+                                    <option value="WITHDRAWAL_REJECTED">Withdrawal Rejected</option>
+                                    <option value="GRADE_ADDED">Grade Added</option>
+                                    <option value="GRADE_UPDATED">Grade Updated</option>
+                                    <option value="COURSE_CREATED">Course Created</option>
+                                    <option value="COURSE_UPDATED">Course Updated</option>
+                                    <option value="SYSTEM_ALERT">System Alert</option>
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -238,7 +244,7 @@
                                     <i class="fas ${statusIcon} ms-2" title="${statusText}"></i>
                                 </div>
                                 <p class="mb-1">${notification.message}</p>
-                                <small class="text-muted">Recipient: ${notification.recipient ? notification.recipient.name : 'Unknown'}</small>
+                                <small class="text-muted">Admin: ${notification.admin ? notification.admin.name : 'System'}</small>
                             </div>
                             <div class="ms-3">
                                 ${isUnread ? `<button class="btn btn-sm btn-outline-success" onclick="markAsRead(${notification.id})" title="Mark as Read">
@@ -255,11 +261,17 @@
         
         function getTypeIcon(type) {
             const icons = {
-                'ENROLLMENT': 'fa-user-plus',
-                'GRADE_UPDATE': 'fa-chart-line',
-                'COURSE_UPDATE': 'fa-book',
-                'SYSTEM': 'fa-cog',
-                'WITHDRAWAL': 'fa-user-minus'
+                'PENDING_ENROLLMENT_REQUEST': 'fa-user-plus',
+                'PENDING_WITHDRAWAL_REQUEST': 'fa-user-minus',
+                'ENROLLMENT_APPROVED': 'fa-check-circle',
+                'ENROLLMENT_REJECTED': 'fa-times-circle',
+                'WITHDRAWAL_APPROVED': 'fa-check-circle',
+                'WITHDRAWAL_REJECTED': 'fa-times-circle',
+                'GRADE_ADDED': 'fa-chart-line',
+                'GRADE_UPDATED': 'fa-chart-line',
+                'COURSE_CREATED': 'fa-book',
+                'COURSE_UPDATED': 'fa-book',
+                'SYSTEM_ALERT': 'fa-cog'
             };
             return icons[type] || 'fa-bell';
         }
@@ -276,7 +288,7 @@
                     (statusFilter === 'unread' && !notification.read);
                 const matchesSearch = !searchTerm || 
                     notification.message.toLowerCase().includes(searchTerm) ||
-                    (notification.recipient && notification.recipient.name.toLowerCase().includes(searchTerm));
+                    (notification.admin && notification.admin.name.toLowerCase().includes(searchTerm));
                 
                 return matchesType && matchesStatus && matchesSearch;
             });

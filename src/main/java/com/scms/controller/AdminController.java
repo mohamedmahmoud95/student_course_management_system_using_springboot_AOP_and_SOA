@@ -4,11 +4,14 @@ import com.scms.entity.Student;
 import com.scms.entity.Course;
 import com.scms.entity.Enrollment;
 import com.scms.entity.Grade;
+import com.scms.entity.Administrator;
 import com.scms.service.StudentService;
 import com.scms.service.CourseService;
 import com.scms.service.EnrollmentService;
 import com.scms.service.GradeService;
 import com.scms.service.NotificationService;
+import com.scms.service.AdminNotificationService;
+import com.scms.service.AdministratorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,12 @@ public class AdminController {
     
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private AdminNotificationService adminNotificationService;
+    
+    @Autowired
+    private AdministratorService administratorService;
     
     // Student Management
     @PostMapping("/students")
@@ -270,7 +279,13 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> updateEnrollmentStatus(@PathVariable Long id, @RequestBody Map<String, String> request) {
         try {
             String status = request.get("status");
-            enrollmentService.updateEnrollmentStatus(id, status);
+            // Get the first administrator for now (in a real app, get from session)
+            List<Administrator> admins = administratorService.getAllAdministrators();
+            if (admins.isEmpty()) {
+                throw new RuntimeException("No administrators found");
+            }
+            Administrator admin = admins.get(0);
+            enrollmentService.updateEnrollmentStatus(id, status, admin);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -288,7 +303,13 @@ public class AdminController {
     @Operation(summary = "Approve an enrollment")
     public ResponseEntity<Map<String, Object>> approveEnrollment(@PathVariable Long id) {
         try {
-            enrollmentService.approveEnrollment(id);
+            // Get the first administrator for now (in a real app, get from session)
+            List<Administrator> admins = administratorService.getAllAdministrators();
+            if (admins.isEmpty()) {
+                throw new RuntimeException("No administrators found");
+            }
+            Administrator admin = admins.get(0);
+            enrollmentService.approveEnrollment(id, admin);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -306,7 +327,13 @@ public class AdminController {
     @Operation(summary = "Reject an enrollment")
     public ResponseEntity<Map<String, Object>> rejectEnrollment(@PathVariable Long id) {
         try {
-            enrollmentService.rejectEnrollment(id);
+            // Get the first administrator for now (in a real app, get from session)
+            List<Administrator> admins = administratorService.getAllAdministrators();
+            if (admins.isEmpty()) {
+                throw new RuntimeException("No administrators found");
+            }
+            Administrator admin = admins.get(0);
+            enrollmentService.rejectEnrollment(id, admin);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -355,19 +382,19 @@ public class AdminController {
         }
     }
     
-    // Notification Management
+    // Admin Notification Management
     @GetMapping("/notifications")
-    @Operation(summary = "Get all notifications")
-    public ResponseEntity<List<com.scms.entity.Notification>> getAllNotifications() {
-        List<com.scms.entity.Notification> notifications = notificationService.getAllNotifications();
+    @Operation(summary = "Get all admin notifications")
+    public ResponseEntity<List<com.scms.entity.AdminNotification>> getAllAdminNotifications() {
+        List<com.scms.entity.AdminNotification> notifications = adminNotificationService.getAllAdminNotifications();
         return ResponseEntity.ok(notifications);
     }
     
     @PostMapping("/notifications/{id}/read")
-    @Operation(summary = "Mark notification as read")
-    public ResponseEntity<Map<String, Object>> markNotificationAsRead(@PathVariable Long id) {
+    @Operation(summary = "Mark admin notification as read")
+    public ResponseEntity<Map<String, Object>> markAdminNotificationAsRead(@PathVariable Long id) {
         try {
-            notificationService.markAsRead(id);
+            adminNotificationService.markAsRead(id);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -382,10 +409,16 @@ public class AdminController {
     }
     
     @PostMapping("/notifications/read-all")
-    @Operation(summary = "Mark all notifications as read")
-    public ResponseEntity<Map<String, Object>> markAllNotificationsAsRead() {
+    @Operation(summary = "Mark all admin notifications as read")
+    public ResponseEntity<Map<String, Object>> markAllAdminNotificationsAsRead() {
         try {
-            notificationService.markAllAsRead();
+            // For now, we'll mark all notifications as read for all admins
+            // In a real application, you'd get the current admin from the session
+            List<com.scms.entity.Administrator> admins = administratorService.getAllAdministrators();
+            
+            for (com.scms.entity.Administrator admin : admins) {
+                adminNotificationService.markAllAsRead(admin);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

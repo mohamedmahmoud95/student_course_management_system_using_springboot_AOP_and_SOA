@@ -62,7 +62,7 @@ public class StudentService {
         Optional<Student> studentOpt = studentRepository.findByEmail(email);
         if (studentOpt.isPresent()) {
             Student student = studentOpt.get();
-            if (passwordEncoder.matches(password, student.getPassword())) {
+            if (password.equals(student.getPassword())) {
                 return Optional.of(student);
             }
         }

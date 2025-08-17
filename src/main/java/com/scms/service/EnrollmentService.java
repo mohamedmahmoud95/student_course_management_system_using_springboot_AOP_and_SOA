@@ -3,7 +3,9 @@ package com.scms.service;
 import com.scms.entity.Enrollment;
 import com.scms.entity.Student;
 import com.scms.entity.Course;
+import com.scms.entity.Administrator;
 import com.scms.entity.Notification;
+import com.scms.entity.AdminNotification;
 import com.scms.repository.EnrollmentRepository;
 import com.scms.repository.StudentRepository;
 import com.scms.repository.CourseRepository;
@@ -30,6 +32,9 @@ public class EnrollmentService {
     
     @Autowired
     private NotificationRepository notificationRepository;
+    
+    @Autowired
+    private AdminNotificationService adminNotificationService;
     
     public Enrollment enrollStudent(Long studentId, Long courseId) {
         Optional<Student> studentOpt = studentRepository.findById(studentId);
@@ -61,6 +66,9 @@ public class EnrollmentService {
             Notification.NotificationType.ENROLLMENT
         );
         notificationRepository.save(studentNotification);
+        
+        // Send notification to all admins about pending enrollment request
+        adminNotificationService.notifyPendingEnrollmentRequest(enrollment);
         
         return enrollment;
     }
@@ -145,7 +153,7 @@ public class EnrollmentService {
         return false;
     }
     
-    public void updateEnrollmentStatus(Long enrollmentId, String status) {
+    public void updateEnrollmentStatus(Long enrollmentId, String status, Administrator admin) {
         Optional<Enrollment> enrollmentOpt = enrollmentRepository.findById(enrollmentId);
         if (enrollmentOpt.isEmpty()) {
             throw new RuntimeException("Enrollment not found");
@@ -173,17 +181,24 @@ public class EnrollmentService {
                 Notification.NotificationType.ENROLLMENT
             );
             notificationRepository.save(notification);
+            
+            // Send notification to admin about their action
+            if (enrollmentStatus == Enrollment.EnrollmentStatus.ACTIVE) {
+                adminNotificationService.notifyEnrollmentApproved(enrollment, admin);
+            } else if (enrollmentStatus == Enrollment.EnrollmentStatus.WITHDRAWN) {
+                adminNotificationService.notifyEnrollmentRejected(enrollment, admin);
+            }
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid enrollment status: " + status);
         }
     }
     
-    public void approveEnrollment(Long enrollmentId) {
-        updateEnrollmentStatus(enrollmentId, "ACTIVE");
+    public void approveEnrollment(Long enrollmentId, Administrator admin) {
+        updateEnrollmentStatus(enrollmentId, "ACTIVE", admin);
     }
     
-    public void rejectEnrollment(Long enrollmentId) {
-        updateEnrollmentStatus(enrollmentId, "WITHDRAWN");
+    public void rejectEnrollment(Long enrollmentId, Administrator admin) {
+        updateEnrollmentStatus(enrollmentId, "WITHDRAWN", admin);
     }
     
     public List<Enrollment> getPendingEnrollments() {

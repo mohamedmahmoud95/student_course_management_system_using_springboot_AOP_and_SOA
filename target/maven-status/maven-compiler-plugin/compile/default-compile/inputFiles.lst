@@ -9,6 +9,7 @@
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/ScmsApplication.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/NotificationService.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/EnrollmentRepository.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/AdminNotificationRepository.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/EnrollmentController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/entity/Course.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/config/SecurityConfig.java
@@ -29,8 +30,10 @@
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/aspect/ExceptionHandlingAspect.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/GradeController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/config/AuthInterceptor.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/AdminNotificationService.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/config/WebConfig.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/CourseRepository.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/GradeService.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/WebController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/AdministratorRepository.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/entity/AdminNotification.java
