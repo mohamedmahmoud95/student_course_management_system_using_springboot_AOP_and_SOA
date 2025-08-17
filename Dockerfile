@@ -27,3 +27,4 @@ COPY --from=build /app/target/student-course-management-system-0.0.1-SNAPSHOT.ja
 
 # Run the application
 CMD ["java", "-jar", "app.jar"]
+# Updated Sun Aug 17 22:18:49 EEST 2025
