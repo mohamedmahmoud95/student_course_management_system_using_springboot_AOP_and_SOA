@@ -90,6 +90,18 @@ public class AdminNotificationService {
             enrollment.getId(), "ENROLLMENT");
     }
     
+    public void notifyWithdrawalRequest(Enrollment enrollment) {
+        // Notify all admins about withdrawal
+        List<Administrator> admins = administratorRepository.findAll();
+        for (Administrator admin : admins) {
+            String message = String.format("Student %s has withdrawn from course: %s", 
+                enrollment.getStudent().getName(), 
+                enrollment.getCourse().getTitle());
+            createNotification(message, admin, AdminNotification.AdminNotificationType.WITHDRAWAL_APPROVED, 
+                enrollment.getId(), "ENROLLMENT");
+        }
+    }
+    
     public void notifyGradeAdded(Student student, String courseTitle, Administrator admin) {
         String message = String.format("Grade added for %s in course: %s", 
             student.getName(), courseTitle);

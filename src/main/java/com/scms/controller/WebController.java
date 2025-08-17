@@ -51,7 +51,7 @@ public class WebController {
             return "redirect:/login";
         }
         
-        List<Enrollment> enrollments = enrollmentService.getActiveStudentEnrollments(studentId);
+        List<Enrollment> enrollments = enrollmentService.getStudentEnrollments(studentId);
         List<Grade> grades = gradeService.getStudentGrades(studentId);
         BigDecimal gpa = studentService.calculateStudentGPA(studentId);
         long unreadNotifications = notificationService.getUnreadCount(studentId);

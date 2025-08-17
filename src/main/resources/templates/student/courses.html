@@ -139,10 +139,18 @@
                                         <strong th:text="${enrollment.course.title}">Course Title</strong><br>
                                         <small class="text-muted" th:text="${enrollment.status}">Status</small>
                                     </div>
-                                    <span class="badge" 
-                                          th:classappend="${enrollment.status == 'ACTIVE' ? 'bg-success' : 
-                                                          enrollment.status == 'COMPLETED' ? 'bg-primary' : 'bg-warning'}"
-                                          th:text="${enrollment.status}">Status</span>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge me-2" 
+                                              th:classappend="${enrollment.status.name() == 'ACTIVE' ? 'bg-success' : 
+                                                              enrollment.status.name() == 'COMPLETED' ? 'bg-primary' : 'bg-warning'}"
+                                              th:text="${enrollment.status}">Status</span>
+                                        <button th:if="${enrollment.status.name() == 'ACTIVE' || enrollment.status.name() == 'PENDING'}" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                th:onclick="'withdrawFromCourse(' + ${enrollment.course.id} + ', ' + ${student.id} + ')'">
+                                            <i class="fas fa-times me-1"></i>
+                                            Withdraw
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -177,6 +185,36 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred while enrolling.');
+            });
+        }
+        
+        function withdrawFromCourse(courseId, studentId) {
+            if (!confirm('Are you sure you want to withdraw from this course?')) {
+                return;
+            }
+            
+            fetch('/api/enrollments/withdraw', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    studentId: studentId,
+                    courseId: courseId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Successfully withdrawn from course!');
+                    location.reload();
+                } else {
+                    alert('Failed to withdraw: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while withdrawing.');
             });
         }
     </script>

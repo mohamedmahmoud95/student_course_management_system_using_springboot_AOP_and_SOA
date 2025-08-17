@@ -90,15 +90,27 @@ public class EnrollmentService {
         }
         
         Enrollment enrollment = enrollmentOpt.get();
+        
+        // Check if enrollment is active or pending
+        if (enrollment.getStatus() != Enrollment.EnrollmentStatus.ACTIVE && 
+            enrollment.getStatus() != Enrollment.EnrollmentStatus.PENDING) {
+            throw new RuntimeException("Can only withdraw from active or pending enrollments");
+        }
+        
+        // Set status to WITHDRAWN
         enrollment.setStatus(Enrollment.EnrollmentStatus.WITHDRAWN);
         enrollmentRepository.save(enrollment);
         
-        Notification notification = new Notification(
+        // Send notification to student
+        Notification studentNotification = new Notification(
             "Successfully withdrawn from " + course.getTitle(),
             student,
             Notification.NotificationType.WITHDRAWAL
         );
-        notificationRepository.save(notification);
+        notificationRepository.save(studentNotification);
+        
+        // Send notification to all admins about withdrawal
+        adminNotificationService.notifyWithdrawalRequest(enrollment);
     }
     
     public List<Enrollment> getStudentEnrollments(Long studentId) {
