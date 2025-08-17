@@ -1,25 +1,29 @@
-# Use OpenJDK 17 slim image
-FROM openjdk:17-jdk-slim
+# Use Maven with OpenJDK 17
+FROM maven:3.9.11-openjdk-17 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy the Maven wrapper and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
+# Copy pom.xml first for better caching
 COPY pom.xml .
 
-# Make mvnw executable
-RUN chmod +x mvnw
-
-# Download dependencies (this layer will be cached if pom.xml doesn't change)
-RUN ./mvnw dependency:go-offline -B
+# Download dependencies
+RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY src src
 
 # Build the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
+
+# Runtime stage
+FROM openjdk:17-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy the built JAR from build stage
+COPY --from=build /app/target/student-course-management-system-0.0.1-SNAPSHOT.jar app.jar
 
 # Run the application
-CMD ["java", "-jar", "target/student-course-management-system-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "app.jar"]
