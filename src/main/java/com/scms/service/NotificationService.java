@@ -86,4 +86,16 @@ public class NotificationService {
             notificationRepository.deleteAll(notifications);
         }
     }
+    
+    public List<Notification> getAllNotifications() {
+        return notificationRepository.findAllByOrderBySentDateDesc();
+    }
+    
+    public void markAllAsRead() {
+        List<Notification> unreadNotifications = notificationRepository.findByReadFalse();
+        for (Notification notification : unreadNotifications) {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        }
+    }
 }

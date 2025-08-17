@@ -11,38 +11,34 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/", "/login", "/register", "/h2-console/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/swagger-resources/**", "/webjars/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/student/**", "/admin/**").permitAll()
-                .requestMatchers("/api/students/**").permitAll()
-                .requestMatchers("/api/courses/**").permitAll()
-                .requestMatchers("/api/enrollments/**").permitAll()
-                .requestMatchers("/api/grades/**").permitAll()
-                .requestMatchers("/api/administrators/**").permitAll()
+                .requestMatchers("/", "/login", "/signup", "/forgot-password", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/students/**", "/api/courses/**", "/api/enrollments/**", "/api/grades/**", "/api/administrators/**", "/api/notifications/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form.disable())
             .logout(logout -> logout
+                .logoutUrl("/api/auth/logout")
                 .logoutSuccessUrl("/")
                 .permitAll()
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**", "/api/**", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**")
+                .ignoringRequestMatchers("/h2-console/**", "/api/**")
             )
-            .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.sameOrigin())
-            );
+            .headers(headers -> headers.frameOptions().sameOrigin());
         
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

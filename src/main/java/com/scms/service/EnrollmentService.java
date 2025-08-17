@@ -54,12 +54,13 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment(student, course);
         enrollment = enrollmentRepository.save(enrollment);
         
-        Notification notification = new Notification(
-            "Successfully enrolled in " + course.getTitle(),
+        // Send notification to student
+        Notification studentNotification = new Notification(
+            "Enrollment request submitted for " + course.getTitle() + ". Waiting for admin approval.",
             student,
             Notification.NotificationType.ENROLLMENT
         );
-        notificationRepository.save(notification);
+        notificationRepository.save(studentNotification);
         
         return enrollment;
     }
@@ -128,6 +129,11 @@ public class EnrollmentService {
         return enrollmentRepository.findAll();
     }
     
+    public Enrollment getEnrollmentById(Long enrollmentId) {
+        return enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+    }
+    
     public boolean isStudentEnrolled(Long studentId, Long courseId) {
         Optional<Student> studentOpt = studentRepository.findById(studentId);
         Optional<Course> courseOpt = courseRepository.findById(courseId);
@@ -150,8 +156,37 @@ public class EnrollmentService {
             Enrollment.EnrollmentStatus enrollmentStatus = Enrollment.EnrollmentStatus.valueOf(status.toUpperCase());
             enrollment.setStatus(enrollmentStatus);
             enrollmentRepository.save(enrollment);
+            
+            // Send notification to student about status change
+            String message;
+            if (enrollmentStatus == Enrollment.EnrollmentStatus.ACTIVE) {
+                message = "Your enrollment in " + enrollment.getCourse().getTitle() + " has been approved!";
+            } else if (enrollmentStatus == Enrollment.EnrollmentStatus.WITHDRAWN) {
+                message = "Your enrollment in " + enrollment.getCourse().getTitle() + " has been rejected.";
+            } else {
+                message = "Your enrollment status in " + enrollment.getCourse().getTitle() + " has been updated to " + status;
+            }
+            
+            Notification notification = new Notification(
+                message,
+                enrollment.getStudent(),
+                Notification.NotificationType.ENROLLMENT
+            );
+            notificationRepository.save(notification);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid enrollment status: " + status);
         }
+    }
+    
+    public void approveEnrollment(Long enrollmentId) {
+        updateEnrollmentStatus(enrollmentId, "ACTIVE");
+    }
+    
+    public void rejectEnrollment(Long enrollmentId) {
+        updateEnrollmentStatus(enrollmentId, "WITHDRAWN");
+    }
+    
+    public List<Enrollment> getPendingEnrollments() {
+        return enrollmentRepository.findByStatus(Enrollment.EnrollmentStatus.PENDING);
     }
 }

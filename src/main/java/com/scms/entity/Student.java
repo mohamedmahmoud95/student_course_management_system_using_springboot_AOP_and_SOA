@@ -1,40 +1,43 @@
 package com.scms.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import java.util.ArrayList;
+import jakarta.validation.constraints.Pattern;
+
 import java.util.List;
 
 @Entity
 @Table(name = "students")
 public class Student {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotBlank
-    @Column(nullable = false)
+    @NotBlank(message = "Name is required")
     private String name;
     
-    @Email
-    @NotBlank
-    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
+    @Pattern(regexp = ".*@eng\\.asu\\.edu\\.eg$", message = "Email must be a valid university email (@eng.asu.edu.eg)")
+    @Column(unique = true)
     private String email;
     
-    @NotBlank
-    @Column(nullable = false)
+    @NotBlank(message = "Password is required")
     private String password;
     
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Enrollment> enrollments = new ArrayList<>();
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Enrollment> enrollments;
     
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Grade> grades = new ArrayList<>();
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Grade> grades;
     
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notification> notifications = new ArrayList<>();
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Notification> notifications;
     
     public Student() {}
     

@@ -8,6 +8,7 @@ import com.scms.service.StudentService;
 import com.scms.service.CourseService;
 import com.scms.service.EnrollmentService;
 import com.scms.service.GradeService;
+import com.scms.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class AdminController {
     
     @Autowired
     private GradeService gradeService;
+    
+    @Autowired
+    private NotificationService notificationService;
     
     // Student Management
     @PostMapping("/students")
@@ -280,6 +284,49 @@ public class AdminController {
         }
     }
     
+    @PostMapping("/enrollments/{id}/approve")
+    @Operation(summary = "Approve an enrollment")
+    public ResponseEntity<Map<String, Object>> approveEnrollment(@PathVariable Long id) {
+        try {
+            enrollmentService.approveEnrollment(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Enrollment approved successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    @PostMapping("/enrollments/{id}/reject")
+    @Operation(summary = "Reject an enrollment")
+    public ResponseEntity<Map<String, Object>> rejectEnrollment(@PathVariable Long id) {
+        try {
+            enrollmentService.rejectEnrollment(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Enrollment rejected successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    @GetMapping("/enrollments/pending")
+    @Operation(summary = "Get pending enrollments")
+    public ResponseEntity<List<Enrollment>> getPendingEnrollments() {
+        List<Enrollment> pendingEnrollments = enrollmentService.getPendingEnrollments();
+        return ResponseEntity.ok(pendingEnrollments);
+    }
+    
     // Dashboard Statistics
     @GetMapping("/dashboard/stats")
     @Operation(summary = "Get dashboard statistics")
@@ -299,6 +346,50 @@ public class AdminController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("stats", stats);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    // Notification Management
+    @GetMapping("/notifications")
+    @Operation(summary = "Get all notifications")
+    public ResponseEntity<List<com.scms.entity.Notification>> getAllNotifications() {
+        List<com.scms.entity.Notification> notifications = notificationService.getAllNotifications();
+        return ResponseEntity.ok(notifications);
+    }
+    
+    @PostMapping("/notifications/{id}/read")
+    @Operation(summary = "Mark notification as read")
+    public ResponseEntity<Map<String, Object>> markNotificationAsRead(@PathVariable Long id) {
+        try {
+            notificationService.markAsRead(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Notification marked as read");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    
+    @PostMapping("/notifications/read-all")
+    @Operation(summary = "Mark all notifications as read")
+    public ResponseEntity<Map<String, Object>> markAllNotificationsAsRead() {
+        try {
+            notificationService.markAllAsRead();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "All notifications marked as read");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();

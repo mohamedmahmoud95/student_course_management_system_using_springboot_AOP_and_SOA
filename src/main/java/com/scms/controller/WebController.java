@@ -4,6 +4,7 @@ import com.scms.entity.Student;
 import com.scms.entity.Course;
 import com.scms.entity.Enrollment;
 import com.scms.entity.Grade;
+import com.scms.entity.Notification;
 import com.scms.service.StudentService;
 import com.scms.service.CourseService;
 import com.scms.service.EnrollmentService;
@@ -40,16 +41,6 @@ public class WebController {
     @GetMapping("/")
     public String home() {
         return "index";
-    }
-    
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-    
-    @GetMapping("/register")
-    public String register() {
-        return "register";
     }
     
     @GetMapping("/student/dashboard")
@@ -139,18 +130,63 @@ public class WebController {
     
     @GetMapping("/admin/students")
     public String adminStudents(Model model) {
-        List<Student> students = studentService.getAllStudents();
-        
-        // Calculate GPA for each student
-        Map<Long, BigDecimal> studentGPAs = new HashMap<>();
-        for (Student student : students) {
-            BigDecimal gpa = studentService.calculateStudentGPA(student.getId());
-            studentGPAs.put(student.getId(), gpa);
+        try {
+            List<Student> students = studentService.getAllStudents();
+            
+            // Calculate actual GPA and enrollment counts
+            Map<Long, BigDecimal> studentGPAs = new HashMap<>();
+            Map<Long, Integer> studentEnrollmentCounts = new HashMap<>();
+            
+            for (Student student : students) {
+                try {
+                    BigDecimal gpa = studentService.calculateStudentGPA(student.getId());
+                    studentGPAs.put(student.getId(), gpa);
+                    
+                    List<Enrollment> enrollments = studentService.getStudentEnrollments(student.getId());
+                    studentEnrollmentCounts.put(student.getId(), enrollments.size());
+                } catch (Exception e) {
+                    studentGPAs.put(student.getId(), BigDecimal.ZERO);
+                    studentEnrollmentCounts.put(student.getId(), 0);
+                }
+            }
+            
+            model.addAttribute("students", students);
+            model.addAttribute("studentGPAs", studentGPAs);
+            model.addAttribute("studentEnrollmentCounts", studentEnrollmentCounts);
+            return "admin/students";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Error loading students: " + e.getMessage());
+            return "error";
         }
-        
-        model.addAttribute("students", students);
-        model.addAttribute("studentGPAs", studentGPAs);
-        return "admin/students";
+    }
+    
+    @GetMapping("/admin/students/{studentId}")
+    public String studentDetails(@PathVariable Long studentId, Model model) {
+        try {
+            Student student = studentService.getStudentById(studentId).orElse(null);
+            if (student == null) {
+                model.addAttribute("error", "Student not found");
+                return "error";
+            }
+            
+            BigDecimal gpa = studentService.calculateStudentGPA(studentId);
+            List<Enrollment> enrollments = studentService.getStudentEnrollments(studentId);
+            List<Grade> grades = gradeService.getStudentGrades(studentId);
+            List<Notification> notifications = notificationService.getStudentNotifications(studentId);
+            
+            model.addAttribute("student", student);
+            model.addAttribute("studentGPA", gpa);
+            model.addAttribute("studentEnrollments", enrollments);
+            model.addAttribute("studentGrades", grades);
+            model.addAttribute("studentNotifications", notifications);
+            
+            return "admin/student-details";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Error loading student details: " + e.getMessage());
+            return "error";
+        }
     }
     
     @GetMapping("/admin/courses")
@@ -172,6 +208,11 @@ public class WebController {
         List<Grade> grades = gradeService.getAllGrades();
         model.addAttribute("grades", grades);
         return "admin/grades";
+    }
+    
+    @GetMapping("/admin/notifications")
+    public String adminNotifications(Model model) {
+        return "admin/notifications";
     }
     
     @PostMapping("/enroll")

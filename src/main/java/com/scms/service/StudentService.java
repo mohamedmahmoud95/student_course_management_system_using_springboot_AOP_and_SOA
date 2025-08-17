@@ -80,6 +80,10 @@ public class StudentService {
     public Optional<Student> getStudentByEmail(String email) {
         return studentRepository.findByEmail(email);
     }
+
+    public Student findByEmail(String email) {
+        return studentRepository.findByEmail(email).orElse(null);
+    }
     
     public Student updateStudent(Student student) {
         return studentRepository.save(student);
@@ -111,11 +115,44 @@ public class StudentService {
             return BigDecimal.ZERO;
         }
         
-        BigDecimal totalScore = grades.stream()
-                .map(Grade::getScore)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalGPA = BigDecimal.ZERO;
+        int totalCredits = 0;
         
-        return totalScore.divide(BigDecimal.valueOf(grades.size()), 2, BigDecimal.ROUND_HALF_UP);
+        for (Grade grade : grades) {
+            BigDecimal score = grade.getScore();
+            // Convert percentage to 4.0 scale
+            BigDecimal gpa;
+            if (score.compareTo(new BigDecimal("93")) >= 0) {
+                gpa = new BigDecimal("4.0");
+            } else if (score.compareTo(new BigDecimal("90")) >= 0) {
+                gpa = new BigDecimal("3.7");
+            } else if (score.compareTo(new BigDecimal("87")) >= 0) {
+                gpa = new BigDecimal("3.3");
+            } else if (score.compareTo(new BigDecimal("83")) >= 0) {
+                gpa = new BigDecimal("3.0");
+            } else if (score.compareTo(new BigDecimal("80")) >= 0) {
+                gpa = new BigDecimal("2.7");
+            } else if (score.compareTo(new BigDecimal("77")) >= 0) {
+                gpa = new BigDecimal("2.3");
+            } else if (score.compareTo(new BigDecimal("73")) >= 0) {
+                gpa = new BigDecimal("2.0");
+            } else if (score.compareTo(new BigDecimal("70")) >= 0) {
+                gpa = new BigDecimal("1.7");
+            } else if (score.compareTo(new BigDecimal("67")) >= 0) {
+                gpa = new BigDecimal("1.3");
+            } else if (score.compareTo(new BigDecimal("63")) >= 0) {
+                gpa = new BigDecimal("1.0");
+            } else if (score.compareTo(new BigDecimal("60")) >= 0) {
+                gpa = new BigDecimal("0.7");
+            } else {
+                gpa = BigDecimal.ZERO;
+            }
+            
+            totalGPA = totalGPA.add(gpa);
+            totalCredits++;
+        }
+        
+        return totalCredits > 0 ? totalGPA.divide(BigDecimal.valueOf(totalCredits), 2, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO;
     }
     
     public List<Notification> getStudentNotifications(Long studentId) {

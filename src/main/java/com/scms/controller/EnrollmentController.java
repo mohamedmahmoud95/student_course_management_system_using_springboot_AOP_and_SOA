@@ -30,7 +30,7 @@ public class EnrollmentController {
             Enrollment enrollment = enrollmentService.enrollStudent(studentId, courseId);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "Successfully enrolled in course");
+            response.put("message", "We've sent a notification to the admin to review and approve your enrollment");
             response.put("enrollment", enrollment);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -61,6 +61,34 @@ public class EnrollmentController {
         }
     }
     
+    @GetMapping("/{enrollmentId}")
+    @Operation(summary = "Get enrollment by ID")
+    public ResponseEntity<Enrollment> getEnrollmentById(@PathVariable Long enrollmentId) {
+        try {
+            Enrollment enrollment = enrollmentService.getEnrollmentById(enrollmentId);
+            return ResponseEntity.ok(enrollment);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @GetMapping("/debug/{enrollmentId}")
+    @Operation(summary = "Debug enrollment by ID")
+    public ResponseEntity<Map<String, Object>> debugEnrollmentById(@PathVariable Long enrollmentId) {
+        try {
+            Enrollment enrollment = enrollmentService.getEnrollmentById(enrollmentId);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("enrollment", enrollment);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.ok(response);
+        }
+    }
+    
     @GetMapping("/student/{studentId}")
     @Operation(summary = "Get all enrollments for a student")
     public ResponseEntity<List<Enrollment>> getStudentEnrollments(@PathVariable Long studentId) {
@@ -72,6 +100,13 @@ public class EnrollmentController {
     @Operation(summary = "Get active enrollments for a student")
     public ResponseEntity<List<Enrollment>> getActiveStudentEnrollments(@PathVariable Long studentId) {
         List<Enrollment> enrollments = enrollmentService.getActiveStudentEnrollments(studentId);
+        return ResponseEntity.ok(enrollments);
+    }
+    
+    @GetMapping
+    @Operation(summary = "Get all enrollments")
+    public ResponseEntity<List<Enrollment>> getAllEnrollments() {
+        List<Enrollment> enrollments = enrollmentService.getAllEnrollments();
         return ResponseEntity.ok(enrollments);
     }
     

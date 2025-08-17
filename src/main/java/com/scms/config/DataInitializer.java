@@ -56,18 +56,21 @@ public class DataInitializer implements CommandLineRunner {
     
     private void initializeAdministrators() {
         if (administratorRepository.count() == 0) {
-            Administrator admin = new Administrator("أحمد محمد", "ahmed@scms.com", passwordEncoder.encode("admin123"));
-            administratorRepository.save(admin);
+            Administrator admin1 = new Administrator("أحمد محمود", "ahmed.mahmoud@eng.asu.edu.eg", passwordEncoder.encode("admin123"));
+            Administrator admin2 = new Administrator("فاطمة علي", "fatima.ali@eng.asu.edu.eg", passwordEncoder.encode("admin123"));
+            
+            administratorRepository.save(admin1);
+            administratorRepository.save(admin2);
         }
     }
     
     private void initializeStudents() {
         if (studentRepository.count() == 0) {
-            Student student1 = new Student("محمد رسلان", "mohamed@student.com", passwordEncoder.encode("student123"));
-            Student student2 = new Student("عمر أحمد", "omar@student.com", passwordEncoder.encode("student123"));
-            Student student3 = new Student("علي حسن", "ali@student.com", passwordEncoder.encode("student123"));
-            Student student4 = new Student("سارة محمود", "sara@student.com", passwordEncoder.encode("student123"));
-            Student student5 = new Student("مريم علي", "maryam@student.com", passwordEncoder.encode("student123"));
+            Student student1 = new Student("محمد رسلان", "mohamed.raslan@eng.asu.edu.eg", passwordEncoder.encode("password123"));
+            Student student2 = new Student("عمر أحمد", "omar.ahmed@eng.asu.edu.eg", passwordEncoder.encode("password123"));
+            Student student3 = new Student("علي محمد", "ali.mohamed@eng.asu.edu.eg", passwordEncoder.encode("password123"));
+            Student student4 = new Student("سارة محمود", "sara.mahmoud@eng.asu.edu.eg", passwordEncoder.encode("password123"));
+            Student student5 = new Student("مريم علي", "maryam.ali@eng.asu.edu.eg", passwordEncoder.encode("password123"));
             
             studentRepository.save(student1);
             studentRepository.save(student2);

@@ -27,4 +27,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     
     @Query("SELECT COUNT(e) FROM Enrollment e WHERE e.course = :course AND e.status = 'ACTIVE'")
     long countActiveEnrollmentsByCourse(@Param("course") Course course);
+
+    List<Enrollment> findByStatus(Enrollment.EnrollmentStatus status);
 }

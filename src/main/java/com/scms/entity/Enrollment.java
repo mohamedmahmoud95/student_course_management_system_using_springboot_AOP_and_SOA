@@ -1,5 +1,6 @@
 package com.scms.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,10 +14,12 @@ public class Enrollment {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
+    @JsonBackReference
     private Student student;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonBackReference
     private Course course;
     
     @Column(nullable = false)
@@ -27,12 +30,12 @@ public class Enrollment {
     private EnrollmentStatus status;
     
     public enum EnrollmentStatus {
-        ACTIVE, WITHDRAWN, COMPLETED
+        PENDING, ACTIVE, WITHDRAWN, COMPLETED
     }
     
     public Enrollment() {
         this.enrollmentDate = LocalDateTime.now();
-        this.status = EnrollmentStatus.ACTIVE;
+        this.status = EnrollmentStatus.PENDING;
     }
     
     public Enrollment(Student student, Course course) {

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Notifications - SCMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem 0;
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+        }
+        .sidebar .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .main-content {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .notification-item {
+            transition: all 0.3s ease;
+        }
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        .notification-unread {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .notification-read {
+            background-color: #ffffff;
+            border-left: 4px solid #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">Admin Portal</h4>
+                        <p class="text-white-50 small">Administrator</p>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/students">
+                                <i class="fas fa-user-graduate me-2"></i>
+                                Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/courses">
+                                <i class="fas fa-book me-2"></i>
+                                Courses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/enrollments">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Enrollments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/grades">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Grades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/notifications">
+                                <i class="fas fa-bell me-2"></i>
+                                Notifications
+                                <span class="badge bg-danger ms-2" id="adminNotificationCount">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/swagger-ui.html">
+                                <i class="fas fa-book me-2"></i>
+                                API Docs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                <i class="fas fa-home me-2"></i>
+                                Home
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="fas fa-bell me-2"></i>
+                        System Notifications
+                    </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="markAllAsRead()">
+                                <i class="fas fa-check-double me-1"></i>
+                                Mark All as Read
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshNotifications()">
+                                <i class="fas fa-sync-alt me-1"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Section -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="typeFilter" class="form-label">Filter by Type</label>
+                                <select class="form-select" id="typeFilter" onchange="filterNotifications()">
+                                    <option value="">All Types</option>
+                                    <option value="ENROLLMENT">Enrollment</option>
+                                    <option value="GRADE_UPDATE">Grade Update</option>
+                                    <option value="COURSE_UPDATE">Course Update</option>
+                                    <option value="SYSTEM">System</option>
+                                    <option value="WITHDRAWAL">Withdrawal</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="statusFilter" class="form-label">Filter by Status</label>
+                                <select class="form-select" id="statusFilter" onchange="filterNotifications()">
+                                    <option value="">All Status</option>
+                                    <option value="unread">Unread</option>
+                                    <option value="read">Read</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="searchInput" class="form-label">Search</label>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search notifications..." onkeyup="filterNotifications()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications List -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list me-2"></i>All Notifications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="notificationsList">
+                            <div class="text-center py-4">
+                                <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                <p class="mt-2 text-muted">Loading notifications...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let allNotifications = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllNotifications();
+        });
+        
+        function loadAllNotifications() {
+            fetch('/api/admin/notifications')
+                .then(response => response.json())
+                .then(data => {
+                    allNotifications = data;
+                    displayNotifications(allNotifications);
+                    updateNotificationCount();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('notificationsList').innerHTML = 
+                        '<div class="text-center py-4"><i class="fas fa-exclamation-triangle text-warning fa-2x"></i><p class="mt-2 text-muted">Error loading notifications</p></div>';
+                });
+        }
+        
+        function displayNotifications(notifications) {
+            const container = document.getElementById('notificationsList');
+            
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="text-center py-4"><i class="fas fa-bell-slash text-muted fa-2x"></i><p class="mt-2 text-muted">No notifications found</p></div>';
+                return;
+            }
+            
+            let html = '';
+            notifications.forEach(notification => {
+                const isUnread = !notification.read;
+                const statusClass = isUnread ? 'notification-unread' : 'notification-read';
+                const statusIcon = isUnread ? 'fa-circle text-warning' : 'fa-check-circle text-success';
+                const statusText = isUnread ? 'Unread' : 'Read';
+                
+                html += `
+                    <div class="notification-item ${statusClass} p-3 mb-2 border rounded" data-id="${notification.id}" data-type="${notification.type}" data-status="${notification.read ? 'read' : 'unread'}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas ${getTypeIcon(notification.type)} me-2 text-primary"></i>
+                                    <span class="badge bg-secondary me-2">${notification.type}</span>
+                                    <small class="text-muted">${new Date(notification.sentDate).toLocaleString()}</small>
+                                    <i class="fas ${statusIcon} ms-2" title="${statusText}"></i>
+                                </div>
+                                <p class="mb-1">${notification.message}</p>
+                                <small class="text-muted">Recipient: ${notification.recipient ? notification.recipient.name : 'Unknown'}</small>
+                            </div>
+                            <div class="ms-3">
+                                ${isUnread ? `<button class="btn btn-sm btn-outline-success" onclick="markAsRead(${notification.id})" title="Mark as Read">
+                                    <i class="fas fa-check"></i>
+                                </button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function getTypeIcon(type) {
+            const icons = {
+                'ENROLLMENT': 'fa-user-plus',
+                'GRADE_UPDATE': 'fa-chart-line',
+                'COURSE_UPDATE': 'fa-book',
+                'SYSTEM': 'fa-cog',
+                'WITHDRAWAL': 'fa-user-minus'
+            };
+            return icons[type] || 'fa-bell';
+        }
+        
+        function filterNotifications() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = allNotifications.filter(notification => {
+                const matchesType = !typeFilter || notification.type === typeFilter;
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'read' && notification.read) ||
+                    (statusFilter === 'unread' && !notification.read);
+                const matchesSearch = !searchTerm || 
+                    notification.message.toLowerCase().includes(searchTerm) ||
+                    (notification.recipient && notification.recipient.name.toLowerCase().includes(searchTerm));
+                
+                return matchesType && matchesStatus && matchesSearch;
+            });
+            
+            displayNotifications(filtered);
+        }
+        
+        function markAsRead(notificationId) {
+            fetch(`/api/admin/notifications/${notificationId}/read`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadAllNotifications();
+                } else {
+                    alert('Error marking notification as read');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error marking notification as read');
+            });
+        }
+        
+        function markAllAsRead() {
+            if (confirm('Mark all notifications as read?')) {
+                fetch('/api/admin/notifications/read-all', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadAllNotifications();
+                    } else {
+                        alert('Error marking all notifications as read');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error marking all notifications as read');
+                });
+            }
+        }
+        
+        function refreshNotifications() {
+            loadAllNotifications();
+        }
+        
+        function updateNotificationCount() {
+            const unreadCount = allNotifications.filter(n => !n.read).length;
+            document.getElementById('adminNotificationCount').textContent = unreadCount;
+        }
+    </script>
+</body>
+</html>

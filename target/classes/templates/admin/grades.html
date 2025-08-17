@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Grades - SCMS</title>
+    <title>Admin - Grade Management - SCMS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -49,7 +49,7 @@
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
                         <h4 class="text-white">Admin Portal</h4>
-                        <p class="text-white-50 small">System Administrator</p>
+                        <p class="text-white-50 small">Administrator</p>
                     </div>
                     
                     <ul class="nav flex-column">
@@ -73,7 +73,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/admin/enrollments">
-                                <i class="fas fa-clipboard-list me-2"></i>
+                                <i class="fas fa-user-plus me-2"></i>
                                 Enrollments
                             </a>
                         </li>
@@ -81,6 +81,13 @@
                             <a class="nav-link active" href="/admin/grades">
                                 <i class="fas fa-chart-line me-2"></i>
                                 Grades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/notifications">
+                                <i class="fas fa-bell me-2"></i>
+                                Notifications
+                                <span class="badge bg-danger ms-2" id="adminNotificationCount">0</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -104,7 +111,7 @@
                     <h1 class="h2">Grade Management</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addNewGrade()">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="showAddGradeModal()">
                                 <i class="fas fa-plus me-1"></i>
                                 Add Grade
                             </button>
@@ -125,42 +132,34 @@
                                         <th>Student</th>
                                         <th>Course</th>
                                         <th>Score</th>
-                                        <th>Grade</th>
                                         <th>Comments</th>
-                                        <th>Date Recorded</th>
+                                        <th>Recorded Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="grade : ${grades}">
                                         <td th:text="${grade.id}">1</td>
-                                        <td th:text="${grade.student.name}">John Doe</td>
-                                        <td th:text="${grade.course.title}">Introduction to Computer Science</td>
-                                        <td th:text="${#numbers.formatDecimal(grade.score, 1, 1)}">95.0</td>
+                                        <td th:text="${grade.student.name}">Student Name</td>
+                                        <td th:text="${grade.course.title}">Course Title</td>
                                         <td>
-                                            <span class="badge fs-6" 
+                                            <span class="badge" 
                                                   th:classappend="${grade.score >= 90 ? 'bg-success' : 
                                                                   grade.score >= 80 ? 'bg-info' : 
-                                                                  grade.score >= 70 ? 'bg-warning' : 
-                                                                  grade.score >= 60 ? 'bg-orange' : 'bg-danger'}"
-                                                  th:text="${grade.score >= 90 ? 'A' : 
-                                                           grade.score >= 80 ? 'B' : 
-                                                           grade.score >= 70 ? 'C' : 
-                                                           grade.score >= 60 ? 'D' : 'F'}">A</span>
+                                                                  grade.score >= 70 ? 'bg-warning' : 'bg-danger'}"
+                                                  th:text="${grade.score}">95.5</span>
                                         </td>
-                                        <td>
-                                            <span th:text="${grade.comments != null ? grade.comments : 'No comments'}">Comments</span>
-                                        </td>
-                                        <td th:text="${#temporals.format(grade.recordedDate, 'MMM dd, yyyy')}">Jan 01, 2024</td>
+                                        <td th:text="${grade.comments}">Comments</td>
+                                        <td th:text="${#temporals.format(grade.recordedDate, 'MMM dd, yyyy')}">Date</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" th:onclick="'viewGrade(' + ${grade.id} + ')'">
+                                                <button class="btn btn-outline-primary" th:attr="onclick='viewGrade(' + ${grade.id} + ')'">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button class="btn btn-outline-warning" th:onclick="'editGrade(' + ${grade.id} + ')'">
+                                                <button class="btn btn-outline-warning" th:attr="onclick='editGrade(' + ${grade.id} + ', ' + ${grade.score} + ', \'' + ${grade.comments} + '\')'">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" th:onclick="'deleteGrade(' + ${grade.id} + ')'">
+                                                <button class="btn btn-outline-danger" th:attr="onclick='deleteGrade(' + ${grade.id} + ')'">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -175,23 +174,309 @@
         </div>
     </div>
     
+    <!-- Add Grade Modal -->
+    <div class="modal fade" id="addGradeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Grade</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addGradeForm">
+                        <div class="mb-3">
+                            <label for="studentSearch" class="form-label">Student</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="studentSearch" placeholder="Search for student by name or email..." onkeyup="searchStudents()">
+                                <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div id="studentSearchResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto; display: none;"></div>
+                            <input type="hidden" id="selectedStudentId" required>
+                            <small class="form-text text-muted">Search for a student who is enrolled in the selected course</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseSelect" class="form-label">Course</label>
+                            <select class="form-select" id="courseSelect" required onchange="onCourseChange()">
+                                <option value="">Select Course</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gradeScore" class="form-label">Score (0-100)</label>
+                            <input type="number" class="form-control" id="gradeScore" min="0" max="100" step="0.1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gradeComments" class="form-label">Comments</label>
+                            <textarea class="form-control" id="gradeComments" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addGrade()">Add Grade</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Grade Modal -->
+    <div class="modal fade" id="editGradeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Grade</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editGradeForm">
+                        <input type="hidden" id="editGradeId">
+                        <div class="mb-3">
+                            <label for="editGradeScore" class="form-label">Score (0-100)</label>
+                            <input type="number" class="form-control" id="editGradeScore" min="0" max="100" step="0.1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editGradeComments" class="form-label">Comments</label>
+                            <textarea class="form-control" id="editGradeComments" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateGrade()">Update Grade</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function addNewGrade() {
-            alert('Add Grade functionality would be implemented here');
+        function showAddGradeModal() {
+            document.getElementById('addGradeForm').reset();
+            loadStudentsAndCourses();
+            new bootstrap.Modal(document.getElementById('addGradeModal')).show();
+        }
+        
+        function loadStudentsAndCourses() {
+            // Load courses
+            fetch('/api/courses')
+                .then(response => response.json())
+                .then(data => {
+                    const courseSelect = document.getElementById('courseSelect');
+                    courseSelect.innerHTML = '<option value="">Select Course</option>';
+                    data.forEach(course => {
+                        const option = document.createElement('option');
+                        option.value = course.id;
+                        option.textContent = course.title;
+                        courseSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+        
+        function searchStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const courseId = document.getElementById('courseSelect').value;
+            
+            if (!courseId) {
+                alert('Please select a course first');
+                return;
+            }
+            
+            if (searchTerm.length < 2) {
+                document.getElementById('studentSearchResults').style.display = 'none';
+                return;
+            }
+            
+            // Get students enrolled in the selected course
+            fetch(`/api/enrollments/course/${courseId}`)
+                .then(response => response.json())
+                .then(enrollments => {
+                    const studentIds = enrollments.map(e => e.student.id);
+                    
+                    // Get all students and filter by search term and enrollment
+                    return fetch('/api/students')
+                        .then(response => response.json())
+                        .then(students => {
+                            const filteredStudents = students.filter(student => 
+                                studentIds.includes(student.id) && 
+                                (student.name.toLowerCase().includes(searchTerm) || 
+                                 student.email.toLowerCase().includes(searchTerm))
+                            );
+                            
+                            displayStudentSearchResults(filteredStudents);
+                        });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error searching students');
+                });
+        }
+        
+        function displayStudentSearchResults(students) {
+            const resultsDiv = document.getElementById('studentSearchResults');
+            resultsDiv.innerHTML = '';
+            
+            if (students.length === 0) {
+                resultsDiv.innerHTML = '<div class="list-group-item text-muted">No enrolled students found</div>';
+            } else {
+                students.forEach(student => {
+                    const item = document.createElement('div');
+                    item.className = 'list-group-item list-group-item-action';
+                    item.textContent = `${student.name} (${student.email})`;
+                    item.onclick = () => selectStudent(student);
+                    resultsDiv.appendChild(item);
+                });
+            }
+            
+            resultsDiv.style.display = 'block';
+        }
+        
+        function selectStudent(student) {
+            document.getElementById('studentSearch').value = student.name;
+            document.getElementById('selectedStudentId').value = student.id;
+            document.getElementById('studentSearchResults').style.display = 'none';
+        }
+        
+        function onCourseChange() {
+            // Clear student selection when course changes
+            document.getElementById('studentSearch').value = '';
+            document.getElementById('selectedStudentId').value = '';
+            document.getElementById('studentSearchResults').style.display = 'none';
+        }
+        
+        function addGrade() {
+            const studentId = document.getElementById('selectedStudentId').value;
+            const courseId = document.getElementById('courseSelect').value;
+            const score = parseFloat(document.getElementById('gradeScore').value);
+            const comments = document.getElementById('gradeComments').value;
+            
+            if (!studentId || !courseId || isNaN(score)) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Validate that student is enrolled in the course
+            fetch(`/api/enrollments/check?studentId=${studentId}&courseId=${courseId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.enrolled) {
+                        alert('Student is not enrolled in this course. Please select an enrolled student.');
+                        return;
+                    }
+                    
+                    // Proceed with adding the grade
+                    submitGrade(studentId, courseId, score, comments);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error validating enrollment');
+                });
+        }
+        
+        function submitGrade(studentId, courseId, score, comments) {
+            
+            fetch('/api/admin/grades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    studentId: parseInt(studentId),
+                    courseId: parseInt(courseId),
+                    score: score,
+                    comments: comments
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Grade added successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding grade');
+            });
         }
         
         function viewGrade(gradeId) {
-            alert('View Grade ' + gradeId + ' functionality would be implemented here');
+            fetch(`/api/grades/${gradeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Grade Details:\nID: ${data.id}\nStudent: ${data.student.name}\nCourse: ${data.course.title}\nScore: ${data.score}\nComments: ${data.comments || 'None'}\nDate: ${new Date(data.recordedDate).toLocaleDateString()}`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading grade details');
+                });
         }
         
-        function editGrade(gradeId) {
-            alert('Edit Grade ' + gradeId + ' functionality would be implemented here');
+        function editGrade(gradeId, score, comments) {
+            document.getElementById('editGradeId').value = gradeId;
+            document.getElementById('editGradeScore').value = score;
+            document.getElementById('editGradeComments').value = comments || '';
+            new bootstrap.Modal(document.getElementById('editGradeModal')).show();
+        }
+        
+        function updateGrade() {
+            const gradeId = document.getElementById('editGradeId').value;
+            const score = parseFloat(document.getElementById('editGradeScore').value);
+            const comments = document.getElementById('editGradeComments').value;
+            
+            if (isNaN(score)) {
+                alert('Please enter a valid score');
+                return;
+            }
+            
+            fetch(`/api/admin/grades/${gradeId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    score: score,
+                    comments: comments
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Grade updated successfully');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating grade');
+            });
         }
         
         function deleteGrade(gradeId) {
             if (confirm('Are you sure you want to delete this grade?')) {
-                alert('Delete Grade ' + gradeId + ' functionality would be implemented here');
+                fetch(`/api/admin/grades/${gradeId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Grade deleted successfully');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting grade');
+                });
             }
         }
     </script>

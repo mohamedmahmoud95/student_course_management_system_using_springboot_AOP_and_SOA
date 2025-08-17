@@ -15,6 +15,8 @@ public class SecurityAspect {
     
     private static final Logger logger = LoggerFactory.getLogger(SecurityAspect.class);
     
+    // Commented out to avoid interference with custom authentication system
+    /*
     @Before("execution(* com.scms.controller.*.*(..))")
     public void validateAuthentication(JoinPoint joinPoint) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,4 +49,5 @@ public class SecurityAspect {
         logger.debug("Admin access granted to: {} for: {}", 
                     authentication.getName(), joinPoint.getSignature().getName());
     }
+    */
 }

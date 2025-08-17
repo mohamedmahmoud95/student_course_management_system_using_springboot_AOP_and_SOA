@@ -21,12 +21,15 @@
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/AdministratorService.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/entity/Student.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/aspect/PerformanceMonitoringAspect.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/AuthController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/StudentController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/CourseController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/AdministratorController.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/entity/Grade.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/aspect/ExceptionHandlingAspect.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/GradeController.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/config/AuthInterceptor.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/config/WebConfig.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/repository/CourseRepository.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/service/GradeService.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/main/java/com/scms/controller/WebController.java

@@ -158,4 +158,8 @@ public class AdministratorService {
             "gpa", averageGrade != null ? BigDecimal.valueOf(averageGrade) : BigDecimal.ZERO
         );
     }
+
+    public Administrator findByEmail(String email) {
+        return administratorRepository.findByEmail(email).orElse(null);
+    }
 }

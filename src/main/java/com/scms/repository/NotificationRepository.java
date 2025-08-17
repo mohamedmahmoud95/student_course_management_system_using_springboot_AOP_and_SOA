@@ -20,4 +20,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.recipient = :recipient AND n.read = false")
     long countUnreadNotificationsByRecipient(@Param("recipient") Student recipient);
+    
+    List<Notification> findAllByOrderBySentDateDesc();
+    
+    List<Notification> findByReadFalse();
 }
