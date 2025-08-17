@@ -1,0 +1,102 @@
+package com.scms.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "students")
+public class Student {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
+    
+    @Email
+    @NotBlank
+    @Column(unique = true, nullable = false)
+    private String email;
+    
+    @NotBlank
+    @Column(nullable = false)
+    private String password;
+    
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Enrollment> enrollments = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Grade> grades = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Notification> notifications = new ArrayList<>();
+    
+    public Student() {}
+    
+    public Student(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+    
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
+    }
+    
+    public List<Grade> getGrades() {
+        return grades;
+    }
+    
+    public void setGrades(List<Grade> grades) {
+        this.grades = grades;
+    }
+    
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+    
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+}
