@@ -27,6 +27,15 @@ class StudentControllerTest {
 
     @MockBean
     private StudentService studentService;
+    
+    @MockBean
+    private EnrollmentService enrollmentService;
+    
+    @MockBean
+    private GradeService gradeService;
+    
+    @MockBean
+    private NotificationService notificationService;
 
     @Autowired
     private ObjectMapper objectMapper;

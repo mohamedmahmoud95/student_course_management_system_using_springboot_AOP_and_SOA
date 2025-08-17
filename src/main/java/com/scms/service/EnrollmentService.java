@@ -124,6 +124,10 @@ public class EnrollmentService {
         return List.of();
     }
     
+    public List<Enrollment> getAllEnrollments() {
+        return enrollmentRepository.findAll();
+    }
+    
     public boolean isStudentEnrolled(Long studentId, Long courseId) {
         Optional<Student> studentOpt = studentRepository.findById(studentId);
         Optional<Course> courseOpt = courseRepository.findById(courseId);

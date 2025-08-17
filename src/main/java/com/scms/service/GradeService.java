@@ -129,6 +129,10 @@ public class GradeService {
         return averageGrade != null ? BigDecimal.valueOf(averageGrade) : BigDecimal.ZERO;
     }
     
+    public List<Grade> getAllGrades() {
+        return gradeRepository.findAll();
+    }
+    
     public void deleteGrade(Long gradeId) {
         gradeRepository.deleteById(gradeId);
     }
