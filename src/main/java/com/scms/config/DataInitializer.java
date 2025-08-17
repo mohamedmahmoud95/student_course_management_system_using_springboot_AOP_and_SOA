@@ -49,11 +49,12 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         initializeAdministrators();
-        initializeStudents();
-        initializeCourses();
-        initializeEnrollments();
-        initializeGrades();
-        // initializeNotifications(); // Temporarily disabled for MySQL migration
+        // Only initialize essential admin data for production
+        // initializeStudents();
+        // initializeCourses();
+        // initializeEnrollments();
+        // initializeGrades();
+        // initializeNotifications();
     }
     
     private void initializeAdministrators() {

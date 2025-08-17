@@ -69,8 +69,9 @@ class EnrollmentControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"studentId\":1,\"courseId\":1}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.status").value("ACTIVE"));
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.enrollment.id").value(1))
+                .andExpect(jsonPath("$.enrollment.status").value("ACTIVE"));
     }
 
     @Test
