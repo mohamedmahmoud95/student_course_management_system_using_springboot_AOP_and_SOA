@@ -54,13 +54,13 @@ public class WebController {
         List<Enrollment> enrollments = enrollmentService.getStudentEnrollments(studentId);
         List<Grade> grades = gradeService.getStudentGrades(studentId);
         BigDecimal gpa = studentService.calculateStudentGPA(studentId);
-        long unreadNotifications = notificationService.getUnreadCount(studentId);
+        // long unreadNotifications = notificationService.getUnreadCount(studentId); // Temporarily disabled
         
         model.addAttribute("student", student);
         model.addAttribute("enrollments", enrollments);
         model.addAttribute("grades", grades);
         model.addAttribute("gpa", gpa);
-        model.addAttribute("unreadNotifications", unreadNotifications);
+        model.addAttribute("unreadNotifications", 0L); // Set to 0 temporarily
         
         return "student/dashboard";
     }
@@ -106,10 +106,10 @@ public class WebController {
             return "redirect:/login";
         }
         
-        List<com.scms.entity.Notification> notifications = notificationService.getStudentNotifications(studentId);
+        // List<com.scms.entity.Notification> notifications = notificationService.getStudentNotifications(studentId); // Temporarily disabled
         
         model.addAttribute("student", student);
-        model.addAttribute("notifications", notifications);
+        model.addAttribute("notifications", List.of()); // Empty list temporarily
         
         return "student/notifications";
     }

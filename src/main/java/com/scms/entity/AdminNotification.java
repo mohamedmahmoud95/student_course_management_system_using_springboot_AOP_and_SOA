@@ -27,7 +27,7 @@ public class AdminNotification {
     @Column(nullable = false)
     private AdminNotificationType type;
     
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private boolean read = false;
     
     // Reference to the related entity (enrollment, etc.)

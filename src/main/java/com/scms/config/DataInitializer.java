@@ -53,7 +53,7 @@ public class DataInitializer implements CommandLineRunner {
         initializeCourses();
         initializeEnrollments();
         initializeGrades();
-        initializeNotifications();
+        // initializeNotifications(); // Temporarily disabled for MySQL migration
     }
     
     private void initializeAdministrators() {
