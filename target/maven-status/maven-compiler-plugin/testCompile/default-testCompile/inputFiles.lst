@@ -1,4 +1,9 @@
-/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/ScmsApplicationTests.java
-/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/config/TestSecurityConfig.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/controller/EnrollmentControllerTest.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/controller/StudentControllerTest.java
 /Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/service/StudentServiceTest.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/service/EnrollmentServiceTest.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/ScmsApplicationTests.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/config/TestSecurityConfig.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/controller/GradeControllerTest.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/controller/CourseControllerTest.java
+/Users/mohamedraslan/cursor_projects/Uni/major_task__student_course_management_system/src/test/java/com/scms/service/CourseServiceTest.java

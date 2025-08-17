@@ -1,4 +1,9 @@
-com/scms/service/StudentServiceTest.class
 com/scms/config/TestSecurityConfig.class
+com/scms/controller/EnrollmentControllerTest.class
 com/scms/ScmsApplicationTests.class
+com/scms/controller/CourseControllerTest.class
+com/scms/controller/GradeControllerTest.class
+com/scms/service/StudentServiceTest.class
+com/scms/service/EnrollmentServiceTest.class
+com/scms/service/CourseServiceTest.class
 com/scms/controller/StudentControllerTest.class
