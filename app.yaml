@@ -1,0 +1,20 @@
+runtime: java17
+env: standard
+
+instance_class: F1
+
+automatic_scaling:
+  target_cpu_utilization: 0.6
+  min_instances: 1
+  max_instances: 10
+
+env_variables:
+  SPRING_PROFILES_ACTIVE: "prod"
+  DATABASE_URL: "jdbc:mysql:///scms_db_prod?cloudSqlInstance=YOUR_PROJECT:REGION:INSTANCE_NAME&socketFactory=com.google.cloud.sql.mysql.SocketFactory"
+  DATABASE_USERNAME: "root"
+  DATABASE_PASSWORD: "YOUR_DB_PASSWORD"
+
+handlers:
+  - url: /.*
+    script: auto
+    secure: always

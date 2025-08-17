@@ -1,0 +1,14 @@
+target/
+!target/*.jar
+.git
+.gitignore
+README.md
+DATABASE_SETUP.md
+*.md
+.idea/
+*.iml
+.vscode/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
