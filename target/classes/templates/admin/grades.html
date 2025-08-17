@@ -97,9 +97,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/">
-                                <i class="fas fa-home me-2"></i>
-                                Home
+                            <a class="nav-link" href="/login" onclick="return confirm('Are you sure you want to logout?')">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Logout
                             </a>
                         </li>
                     </ul>
@@ -185,16 +185,11 @@
                 <div class="modal-body">
                     <form id="addGradeForm">
                         <div class="mb-3">
-                            <label for="studentSearch" class="form-label">Student</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="studentSearch" placeholder="Search for student by name or email..." onkeyup="searchStudents()">
-                                <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                            <div id="studentSearchResults" class="list-group mt-2" style="max-height: 200px; overflow-y: auto; display: none;"></div>
-                            <input type="hidden" id="selectedStudentId" required>
-                            <small class="form-text text-muted">Search for a student who is enrolled in the selected course</small>
+                            <label for="studentSelect" class="form-label">Student</label>
+                            <select class="form-select" id="studentSelect" required>
+                                <option value="">Select Student (Choose a course first)</option>
+                            </select>
+                            <small class="form-text text-muted">Only students enrolled in the selected course will be shown</small>
                         </div>
                         <div class="mb-3">
                             <label for="courseSelect" class="form-label">Course</label>
@@ -296,17 +291,10 @@
                 });
         }
         
-        function searchStudents() {
-            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
-            const courseId = document.getElementById('courseSelect').value;
-            
+        function loadStudentsForCourse(courseId) {
             if (!courseId) {
-                alert('Please select a course first');
-                return;
-            }
-            
-            if (searchTerm.length < 2) {
-                document.getElementById('studentSearchResults').style.display = 'none';
+                const studentSelect = document.getElementById('studentSelect');
+                studentSelect.innerHTML = '<option value="">Select Student (Choose a course first)</option>';
                 return;
             }
             
@@ -316,59 +304,46 @@
                 .then(enrollments => {
                     const studentIds = enrollments.map(e => e.student.id);
                     
-                    // Get all students and filter by search term and enrollment
+                    // Get all students and filter by enrollment
                     return fetch('/api/students')
                         .then(response => response.json())
                         .then(students => {
-                            const filteredStudents = students.filter(student => 
-                                studentIds.includes(student.id) && 
-                                (student.name.toLowerCase().includes(searchTerm) || 
-                                 student.email.toLowerCase().includes(searchTerm))
+                            const enrolledStudents = students.filter(student => 
+                                studentIds.includes(student.id)
                             );
                             
-                            displayStudentSearchResults(filteredStudents);
+                            displayStudentsInDropdown(enrolledStudents);
                         });
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error searching students');
+                    alert('Error loading students for this course');
                 });
         }
         
-        function displayStudentSearchResults(students) {
-            const resultsDiv = document.getElementById('studentSearchResults');
-            resultsDiv.innerHTML = '';
+        function displayStudentsInDropdown(students) {
+            const studentSelect = document.getElementById('studentSelect');
+            studentSelect.innerHTML = '<option value="">Select Student</option>';
             
             if (students.length === 0) {
-                resultsDiv.innerHTML = '<div class="list-group-item text-muted">No enrolled students found</div>';
+                studentSelect.innerHTML = '<option value="">No students enrolled in this course</option>';
             } else {
                 students.forEach(student => {
-                    const item = document.createElement('div');
-                    item.className = 'list-group-item list-group-item-action';
-                    item.textContent = `${student.name} (${student.email})`;
-                    item.onclick = () => selectStudent(student);
-                    resultsDiv.appendChild(item);
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.name} (${student.email})`;
+                    studentSelect.appendChild(option);
                 });
             }
-            
-            resultsDiv.style.display = 'block';
-        }
-        
-        function selectStudent(student) {
-            document.getElementById('studentSearch').value = student.name;
-            document.getElementById('selectedStudentId').value = student.id;
-            document.getElementById('studentSearchResults').style.display = 'none';
         }
         
         function onCourseChange() {
-            // Clear student selection when course changes
-            document.getElementById('studentSearch').value = '';
-            document.getElementById('selectedStudentId').value = '';
-            document.getElementById('studentSearchResults').style.display = 'none';
+            const courseId = document.getElementById('courseSelect').value;
+            loadStudentsForCourse(courseId);
         }
         
         function addGrade() {
-            const studentId = document.getElementById('selectedStudentId').value;
+            const studentId = document.getElementById('studentSelect').value;
             const courseId = document.getElementById('courseSelect').value;
             const score = parseFloat(document.getElementById('gradeScore').value);
             const comments = document.getElementById('gradeComments').value;

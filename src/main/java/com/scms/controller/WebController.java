@@ -140,17 +140,12 @@ public class WebController {
             
             for (Student student : students) {
                 try {
-                    System.out.println("Processing student: " + student.getName() + " (ID: " + student.getId() + ")");
-                    
                     BigDecimal gpa = studentService.calculateStudentGPA(student.getId());
                     studentGPAs.put(student.getId(), gpa);
-                    System.out.println("  GPA: " + gpa);
                     
                     List<Enrollment> enrollments = enrollmentService.getStudentEnrollments(student.getId());
                     studentEnrollmentCounts.put(student.getId(), enrollments.size());
-                    System.out.println("  Enrollments: " + enrollments.size());
                 } catch (Exception e) {
-                    System.out.println("  Error processing student " + student.getId() + ": " + e.getMessage());
                     studentGPAs.put(student.getId(), BigDecimal.ZERO);
                     studentEnrollmentCounts.put(student.getId(), 0);
                 }
@@ -180,17 +175,13 @@ public class WebController {
             model.addAttribute("students", students);
             model.addAttribute("studentGPAs", studentGPAs);
             model.addAttribute("studentEnrollmentCounts", studentEnrollmentCounts);
-            // Debug logging
-            System.out.println("Debug - totalStudents: " + totalStudents);
-            System.out.println("Debug - totalEnrollments: " + totalEnrollments);
-            System.out.println("Debug - averageGPA: " + averageGPA);
-            System.out.println("Debug - activeStudents: " + activeStudents);
+
             
-            // Use hardcoded values for testing
-            model.addAttribute("totalStudents", 5);
-            model.addAttribute("totalEnrollments", 9);
-            model.addAttribute("averageGPA", new BigDecimal("3.50"));
-            model.addAttribute("activeStudents", 4);
+            // Calculate statistics using simple approach
+            model.addAttribute("totalStudents", students.size());
+            model.addAttribute("totalEnrollments", allEnrollments.size());
+            model.addAttribute("averageGPA", averageGPA);
+            model.addAttribute("activeStudents", activeStudents);
             return "admin/students";
         } catch (Exception e) {
             e.printStackTrace();
