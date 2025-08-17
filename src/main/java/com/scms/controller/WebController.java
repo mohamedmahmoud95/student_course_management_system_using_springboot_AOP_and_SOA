@@ -224,6 +224,11 @@ public class WebController {
         return "redirect:/admin/dashboard";
     }
     
+    @GetMapping("/test")
+    public String test() {
+        return "Hello World!";
+    }
+    
     @PostMapping("/enroll")
     public String enrollStudent(@RequestParam Long studentId, @RequestParam Long courseId, Model model) {
         try {

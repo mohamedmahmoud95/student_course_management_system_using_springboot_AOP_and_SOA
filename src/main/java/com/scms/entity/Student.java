@@ -1,6 +1,6 @@
 package com.scms.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,15 +28,15 @@ public class Student {
     private String password;
     
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Enrollment> enrollments;
     
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Grade> grades;
     
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Notification> notifications;
     
     public Student() {}

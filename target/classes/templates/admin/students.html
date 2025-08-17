@@ -40,6 +40,25 @@
         .btn-primary:hover {
             background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
         }
+        .table-hover tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+        .badge {
+            font-size: 0.85em;
+        }
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .statistics-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .statistics-card:hover {
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -113,6 +132,70 @@
                     </div>
                 </div>
                 
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-white bg-primary statistics-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title" th:text="${students.size()}">0</h4>
+                                        <p class="card-text">Total Students</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-user-graduate fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-success statistics-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">-</h4>
+                                        <p class="card-text">Total Enrollments</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-book fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-info statistics-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">-</h4>
+                                        <p class="card-text">Average GPA</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-chart-line fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-warning statistics-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">-</h4>
+                                        <p class="card-text">Active Students</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-user-check fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="card">
                     <div class="card-header">
                         <div class="row align-items-center">
@@ -132,12 +215,12 @@
                             <table class="table table-hover" id="studentsTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Enrollments</th>
-                                        <th>GPA</th>
-                                        <th>Actions</th>
+                                        <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                        <th><i class="fas fa-user me-1"></i>Name</th>
+                                        <th><i class="fas fa-envelope me-1"></i>Email</th>
+                                        <th><i class="fas fa-book me-1"></i>Enrollments</th>
+                                        <th><i class="fas fa-chart-line me-1"></i>GPA</th>
+                                        <th><i class="fas fa-cogs me-1"></i>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -146,20 +229,20 @@
                                         <td th:text="${student.name}">John Doe</td>
                                         <td th:text="${student.email}">john@student.com</td>
                                         <td>
-                                            <span class="badge bg-info">0</span>
+                                            <span class="badge bg-info" th:text="${studentEnrollmentCounts.get(student.id)}">0</span>
                                         </td>
                                         <td>
-                                            <span class="badge bg-success">0.00</span>
+                                            <span class="badge bg-success" th:text="${#numbers.formatDecimal(studentGPAs.get(student.id), 1, 2)}">0.00</span>
                                         </td>
                                         <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" th:attr="onclick='viewStudent(' + ${student.id} + ')'">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button class="btn btn-outline-primary" th:attr="onclick='viewStudent(' + ${student.id} + ')'" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button class="btn btn-outline-warning" th:attr="onclick='editStudent(' + ${student.id} + ', \'' + ${student.name} + '\', \'' + ${student.email} + '\')'">
+                                                <button class="btn btn-outline-warning" th:attr="onclick='editStudent(' + ${student.id} + ', \'' + ${student.name} + '\', \'' + ${student.email} + '\')'" title="Edit Student">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" th:attr="onclick='deleteStudent(' + ${student.id} + ')'">
+                                                <button class="btn btn-outline-danger" th:attr="onclick='deleteStudent(' + ${student.id} + ')'" title="Delete Student">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -314,23 +397,30 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h6><i class="fas fa-id-badge text-primary"></i> Student ID</h6>
-                            <p class="mb-3">${studentId}</p>
+                            <p class="mb-3"><strong>${studentId}</strong></p>
                             
-                            <h6><i class="fas fa-user text-success"></i> Name</h6>
-                            <p class="mb-3">${name}</p>
+                            <h6><i class="fas fa-user text-success"></i> Full Name</h6>
+                            <p class="mb-3"><strong>${name}</strong></p>
                         </div>
                         <div class="col-md-6">
-                            <h6><i class="fas fa-envelope text-info"></i> Email</h6>
-                            <p class="mb-3">${email}</p>
+                            <h6><i class="fas fa-envelope text-info"></i> Email Address</h6>
+                            <p class="mb-3"><strong>${email}</strong></p>
                             
-                            <h6><i class="fas fa-user-plus text-warning"></i> Enrollments</h6>
-                            <p class="mb-3">${enrollments}</p>
+                            <h6><i class="fas fa-user-plus text-warning"></i> Total Enrollments</h6>
+                            <p class="mb-3"><span class="badge bg-info fs-6">${enrollments}</span></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <h6><i class="fas fa-chart-line text-secondary"></i> GPA</h6>
-                            <p class="mb-3"><span class="badge bg-primary">${gpa}</span></p>
+                            <h6><i class="fas fa-chart-line text-secondary"></i> Current GPA</h6>
+                            <p class="mb-3"><span class="badge bg-success fs-6">${gpa}</span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-12">
+                            <h6><i class="fas fa-info-circle text-primary"></i> Additional Information</h6>
+                            <p class="text-muted">Click on the edit button to modify student information or view detailed academic records.</p>
                         </div>
                     </div>
                 `;
@@ -410,21 +500,44 @@
             const filter = input.value.toLowerCase();
             const table = document.getElementById('studentsTable');
             const rows = table.getElementsByTagName('tr');
+            let visibleCount = 0;
             
             for (let i = 1; i < rows.length; i++) {
                 const nameCell = rows[i].cells[1];
                 const emailCell = rows[i].cells[2];
-                if (nameCell && emailCell) {
+                const idCell = rows[i].cells[0];
+                
+                if (nameCell && emailCell && idCell) {
                     const name = nameCell.textContent || nameCell.innerText;
                     const email = emailCell.textContent || emailCell.innerText;
-                    if (name.toLowerCase().indexOf(filter) > -1 || email.toLowerCase().indexOf(filter) > -1) {
+                    const id = idCell.textContent || idCell.innerText;
+                    
+                    if (name.toLowerCase().indexOf(filter) > -1 || 
+                        email.toLowerCase().indexOf(filter) > -1 || 
+                        id.indexOf(filter) > -1) {
                         rows[i].style.display = '';
+                        visibleCount++;
                     } else {
                         rows[i].style.display = 'none';
                     }
                 }
             }
+            
+            // Show/hide "no results" message
+            const noResultsRow = document.getElementById('noResultsRow');
+            if (visibleCount === 0 && filter.length > 0) {
+                if (!noResultsRow) {
+                    const tbody = table.querySelector('tbody');
+                    const newRow = document.createElement('tr');
+                    newRow.id = 'noResultsRow';
+                    newRow.innerHTML = '<td colspan="6" class="text-center text-muted py-4"><i class="fas fa-search me-2"></i>No students found matching your search</td>';
+                    tbody.appendChild(newRow);
+                }
+            } else if (noResultsRow) {
+                noResultsRow.remove();
+            }
         }
     </script>
 </body>
 </html>
+
