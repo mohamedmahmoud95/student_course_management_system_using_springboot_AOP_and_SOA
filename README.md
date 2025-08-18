@@ -240,6 +240,63 @@ mvn test
 5. **API Gateway**: Centralized API management
 6. **Monitoring & Logging**: ELK stack integration
 
+## Screenshots of the developed software
+
+### landing page:
+
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 11 51 39 am" src="https://github.com/user-attachments/assets/3e0ea44f-eed8-4d3d-b649-c2a878528130" />
+
+#### Arabic version:
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 11 51 46 am" src="https://github.com/user-attachments/assets/c7dcb69e-2b93-4a36-b1a4-8baf29c2261d" />
+
+
+
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 11 51 25 am" src="https://github.com/user-attachments/assets/d07d4060-84c0-48de-9291-8aa2ecf0b238" />
+
+### Admin interface:
+
+
+<img width="1216" height="640" alt="Screenshot 2025-08-17 at 6 14 23 pm" src="https://github.com/user-attachments/assets/5aa6b12a-a640-4071-a76d-7611b2860bd8" />
+
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 12 47 36 pm" src="https://github.com/user-attachments/assets/bc99dfb0-1e1f-4615-a351-ea508507c641" />
+
+
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 12 47 42 pm" src="https://github.com/user-attachments/assets/2e0c6ecb-2ff0-48d6-b165-60163ee4ec21" />
+
+
+<img width="1470" height="749" alt="Screenshot 2025-08-18 at 1 04 01 pm" src="https://github.com/user-attachments/assets/a1661243-11ae-4fa2-ab01-653768bb89cf" />
+
+
+<img width="1470" height="747" alt="Screenshot 2025-08-18 at 1 00 17 pm" src="https://github.com/user-attachments/assets/ad9ea05e-e388-43cb-9318-b6452e3243f6" />
+
+
+
+
+### Student interface:
+
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 1 06 57 pm" src="https://github.com/user-attachments/assets/cddaa712-260a-4f79-81ba-40aeb1d61c49" />
+
+<img width="428" height="674" alt="Screenshot 2025-08-18 at 12 44 13 pm" src="https://github.com/user-attachments/assets/bd8bd347-c77e-4e75-87b8-48633b416e04" />
+
+<img width="1470" height="694" alt="Screenshot 2025-08-18 at 1 05 15 pm" src="https://github.com/user-attachments/assets/324fcd82-439a-419e-a63c-34e8f0acaaa2" />
+
+<img width="1470" height="956" alt="Screenshot 2025-08-17 at 5 08 34 pm" src="https://github.com/user-attachments/assets/75a953df-9ed1-43a0-ad53-1ce053022fa3" />
+
+<img width="1470" height="956" alt="Screenshot 2025-08-17 at 7 11 03 pm" src="https://github.com/user-attachments/assets/78c535d6-f2b4-4727-919d-a5f31aa2f1ba" />
+
+
+
+
+### Swagger API documentation: 
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 11 49 30 am" src="https://github.com/user-attachments/assets/b5b0ebfc-b7a4-4481-b1e7-08e87460ab85" />
+
+
+
+<img width="1470" height="956" alt="Screenshot 2025-08-18 at 12 08 15 pm" src="https://github.com/user-attachments/assets/0600b01c-c717-49e3-a602-b7f2cbb3fc37" />
+
+
+
+
 ## 📄 License
 
 This project is developed for educational purposes as part of a university course requirement.
