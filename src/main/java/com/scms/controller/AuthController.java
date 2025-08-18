@@ -58,29 +58,39 @@ public class AuthController {
             Map<String, Object> response = new HashMap<>();
             
             if ("student".equals(userType)) {
-                Student student = studentService.findByEmail(email);
-                if (student != null && password.equals(student.getPassword())) {
-                    session.setAttribute("userType", "student");
-                    session.setAttribute("userId", student.getId());
-                    session.setAttribute("userName", student.getName());
-                    
-                    response.put("success", true);
-                    response.put("message", "Login successful");
-                    response.put("redirect", "/student/dashboard?studentId=" + student.getId());
-                    return ResponseEntity.ok(response);
-                }
+                return studentService.authenticateStudent(email, password)
+                        .map(student -> {
+                            session.setAttribute("userType", "student");
+                            session.setAttribute("userId", student.getId());
+                            session.setAttribute("userName", student.getName());
+
+                            response.put("success", true);
+                            response.put("message", "Login successful");
+                            response.put("redirect", "/student/dashboard?studentId=" + student.getId());
+                            return ResponseEntity.ok(response);
+                        })
+                        .orElseGet(() -> {
+                            response.put("success", false);
+                            response.put("message", "Invalid email or password");
+                            return ResponseEntity.badRequest().body(response);
+                        });
             } else if ("admin".equals(userType)) {
-                Administrator admin = administratorService.findByEmail(email);
-                if (admin != null && password.equals(admin.getPassword())) {
-                    session.setAttribute("userType", "admin");
-                    session.setAttribute("userId", admin.getId());
-                    session.setAttribute("userName", admin.getName());
-                    
-                    response.put("success", true);
-                    response.put("message", "Login successful");
-                    response.put("redirect", "/admin/dashboard");
-                    return ResponseEntity.ok(response);
-                }
+                return administratorService.authenticateAdministrator(email, password)
+                        .map(admin -> {
+                            session.setAttribute("userType", "admin");
+                            session.setAttribute("userId", admin.getId());
+                            session.setAttribute("userName", admin.getName());
+
+                            response.put("success", true);
+                            response.put("message", "Login successful");
+                            response.put("redirect", "/admin/dashboard");
+                            return ResponseEntity.ok(response);
+                        })
+                        .orElseGet(() -> {
+                            response.put("success", false);
+                            response.put("message", "Invalid email or password");
+                            return ResponseEntity.badRequest().body(response);
+                        });
             }
             
             response.put("success", false);

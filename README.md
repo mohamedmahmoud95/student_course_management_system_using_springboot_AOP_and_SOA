@@ -1,121 +1,257 @@
-# Student Course Management System (SCMS)
+# 🎓 Student Course Management System (SCMS)
 
-A comprehensive web-based application for managing student course registrations, grades, and academic records, demonstrating Aspect-Oriented Programming (AOP) and Service-Oriented Architecture (SOA) principles using the Spring Framework.
+## 📋 Project Overview
 
-## Features
+The Student Course Management System (SCMS) is a comprehensive web application designed to manage student enrollments, course offerings, grade tracking, and administrative operations in an educational institution. Built using Spring Boot with a focus on **Aspect-Oriented Programming (AOP)** and **Service-Oriented Architecture (SOA)**, the system provides a robust, scalable, and maintainable solution for educational management.
 
-- **Student Management**: Registration, authentication, profile management
-- **Course Management**: Course catalog, availability tracking, capacity management
-- **Enrollment System**: Course registration and withdrawal functionality
-- **Grade Management**: Grade recording, GPA calculation, academic reporting
-- **Notification System**: Automated notifications for enrollment and grade updates
-- **Administrative Tools**: Comprehensive reporting and system management
+### 🎯 Key Features
 
-## Technical Stack
+- **Student Management**: Registration, authentication, course enrollment, grade viewing
+- **Course Management**: Course creation, capacity management, enrollment tracking
+- **Administrative Operations**: Student oversight, grade management, enrollment approval
+- **Real-time Notifications**: Student and admin notification systems
+- **RESTful APIs**: Complete API documentation with Swagger
+- **Responsive UI**: Modern Bootstrap-based interface for both admin and student portals
 
-- **Framework**: Spring Boot 3.5.4
-- **Database**: H2 (in-memory)
-- **ORM**: Spring Data JPA
-- **Security**: Spring Security with BCrypt password encoding
-- **AOP**: Spring AOP with AspectJ
-- **UI**: Thymeleaf templates with Bootstrap
-- **API Documentation**: Swagger/OpenAPI
-- **Build Tool**: Maven
+## 🏗️ Architecture Overview
 
-## AOP Implementation
+### AOP (Aspect-Oriented Programming) Implementation
+- **LoggingAspect**: Comprehensive method execution logging
+- **PerformanceMonitoringAspect**: Execution time monitoring and performance alerts
+- **SecurityAspect**: Authentication and authorization checks
+- **TransactionManagementAspect**: Database transaction management
+- **ExceptionHandlingAspect**: Centralized error handling
 
-The application demonstrates five key aspects:
+### SOA (Service-Oriented Architecture) Implementation
+- **StudentService**: Student lifecycle management
+- **CourseService**: Course operations and capacity management
+- **EnrollmentService**: Enrollment workflow and status management
+- **GradeService**: Grade recording and GPA calculation
+- **NotificationService**: Student notification management
+- **AdminNotificationService**: Administrative notification system
+- **AdministratorService**: Administrative operations and reporting
 
-1. **Logging Aspect**: Automatically logs all method executions
-2. **Security Aspect**: Validates user authentication and authorization
-3. **Performance Monitoring Aspect**: Tracks method execution times
-4. **Transaction Management Aspect**: Ensures data consistency
-5. **Exception Handling Aspect**: Centralized error handling
+## 🛠️ Technology Stack
 
-## SOA Implementation
+### Backend
+- **Spring Boot 3.5.4**: Main application framework
+- **Spring Data JPA**: Object-relational mapping and data access
+- **Spring Security**: Authentication and authorization
+- **MySQL 8.0**: Relational database for persistent storage
+- **Maven**: Build management and dependency resolution
+- **Springdoc OpenAPI**: API documentation with Swagger UI
 
-The system is built with loosely coupled services:
+### Frontend
+- **Thymeleaf**: Server-side templating engine
+- **Bootstrap 5.3.0**: Responsive CSS framework
+- **Font Awesome 6.0.0**: Icon library
+- **JavaScript**: Client-side interactivity
 
-1. **Student Service**: Manages student profiles and authentication
-2. **Course Service**: Handles course catalog and availability
-3. **Enrollment Service**: Manages course registrations
-4. **Grade Service**: Handles grade recording and calculations
-5. **Notification Service**: Sends alerts and updates
-6. **Administrator Service**: System administration and reporting
+### Development & Testing
+- **JUnit 5**: Unit testing framework
+- **Mockito**: Mocking framework for testing
+- **Spring Boot Test**: Integration testing support
 
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Java 17 or higher
+- MySQL 8.0 or higher
 - Maven 3.6 or higher
 
-### Running the Application
+### Database Setup
+1. Create MySQL database:
+```sql
+CREATE DATABASE scms_db_dev;
+```
 
-1. Clone the repository
-2. Navigate to the project directory
+2. Create MySQL user:
+```sql
+CREATE USER 'scms_user'@'localhost' IDENTIFIED BY 'scms_password';
+GRANT ALL PRIVILEGES ON scms_db_dev.* TO 'scms_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### Application Setup
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd student-course-management-system
+```
+
+2. Build the application:
+```bash
+mvn clean compile
+```
+
 3. Run the application:
-   ```bash
-   mvn spring-boot:run
-   ```
+```bash
+mvn spring-boot:run -Dspring.profiles.active=dev
+```
 
-### Accessing the Application
-
+4. Access the application:
 - **Main Application**: http://localhost:8080
-- **Swagger API Documentation**: http://localhost:8080/swagger-ui.html
-- **H2 Database Console**: http://localhost:8080/h2-console
+- **Swagger Documentation**: http://localhost:8080/swagger-ui.html
 
-### Demo Credentials
+## 🔐 Testing Credentials
 
-**Student Login:**
-- Email: john@student.com
-- Password: student123
+### Admin Access
+- **Email**: admin@test.com
+- **Password**: admin123
 
-**Admin Login:**
-- Email: admin@scms.com
-- Password: admin123
+*Note: You may need to create an admin account first using the registration API*
 
-## API Endpoints
+### Student Access
+- Students can register through the web interface
+- Default password for new students: `password123`
 
-The application provides RESTful APIs for all operations:
+## 📱 Application Features
 
-- `/api/students/*` - Student management endpoints
-- `/api/courses/*` - Course management endpoints
-- `/api/enrollments/*` - Enrollment management endpoints
-- `/api/grades/*` - Grade management endpoints
-- `/api/admin/*` - Administrative endpoints
+### Admin Portal
+- **Dashboard**: Overview of system statistics
+- **Student Management**: View, add, edit, and delete students
+- **Course Management**: Create and manage courses
+- **Enrollment Management**: Approve/reject enrollment requests
+- **Grade Management**: Record and manage student grades
+- **Reports**: Generate enrollment and grade reports
 
-## Testing
+### Student Portal
+- **Dashboard**: Personal overview and current enrollments
+- **Course Catalog**: Browse available courses
+- **Enrollment**: Request enrollment in courses
+- **Grades**: View personal grades and GPA
+- **Notifications**: View system notifications
 
-Run the test suite:
+## 🔧 API Documentation
+
+The complete API documentation is available through Swagger UI at:
+**http://localhost:8080/swagger-ui.html**
+
+### Key API Endpoints
+
+#### Admin APIs
+- `POST /api/admin/register` - Register new administrator
+- `POST /api/admin/login` - Admin authentication
+- `GET /api/admin/dashboard/stats` - Dashboard statistics
+- `GET /api/admin/students` - List all students
+- `GET /api/admin/courses` - List all courses
+- `GET /api/admin/enrollments` - List all enrollments
+
+#### Student APIs
+- `POST /api/students/register` - Student registration
+- `POST /api/students/login` - Student authentication
+- `GET /api/students/{id}` - Get student details
+- `PUT /api/students/{id}` - Update student information
+
+#### Course APIs
+- `POST /api/courses` - Create new course
+- `GET /api/courses` - List all courses
+- `GET /api/courses/available` - List available courses
+- `PUT /api/courses/{id}` - Update course
+- `DELETE /api/courses/{id}` - Delete course
+
+#### Enrollment APIs
+- `POST /api/enrollments/enroll` - Enroll student in course
+- `POST /api/enrollments/withdraw` - Withdraw from course
+- `GET /api/enrollments/student/{id}` - Get student enrollments
+- `GET /api/enrollments/course/{id}` - Get course enrollments
+
+#### Grade APIs
+- `POST /api/grades/record` - Record student grade
+- `GET /api/grades/student/{id}` - Get student grades
+- `GET /api/grades/student/{id}/gpa` - Calculate student GPA
+- `PUT /api/grades/{id}` - Update grade
+
+## 🧪 Testing
+
+Run the complete test suite:
 ```bash
 mvn test
 ```
 
-## Project Structure
+**Test Results**: All 47 tests pass successfully, covering:
+- Application startup tests
+- Controller layer tests
+- Service layer tests
+- Integration tests
 
-```
-src/
-├── main/
-│   ├── java/com/scms/
-│   │   ├── aspect/          # AOP aspects
-│   │   ├── config/          # Configuration classes
-│   │   ├── controller/      # REST and web controllers
-│   │   ├── entity/          # JPA entities
-│   │   ├── repository/      # Data access layer
-│   │   └── service/         # Business logic services
-│   └── resources/
-│       ├── templates/       # Thymeleaf templates
-│       └── application.properties
-└── test/                    # Unit and integration tests
-```
+## 📊 Database Schema
 
-## Key Features Demonstrated
+### Core Entities
+- **Student**: Student information and authentication
+- **Course**: Course details and capacity management
+- **Enrollment**: Student-course relationships and status
+- **Grade**: Academic performance records
+- **Administrator**: Administrative user management
+- **Notification**: Student notification system
+- **AdminNotification**: Administrative notification system
 
-- **AOP**: Cross-cutting concerns implemented as aspects
-- **SOA**: Modular, loosely coupled service architecture
-- **Security**: Role-based authentication and authorization
-- **RESTful APIs**: Complete CRUD operations with proper HTTP status codes
-- **Documentation**: Swagger/OpenAPI integration
-- **Testing**: Comprehensive unit and integration tests
-- **UI**: Modern, responsive web interface
+## 🔒 Security Features
+
+- **Password Encryption**: BCrypt password hashing
+- **Session Management**: Secure session handling
+- **Input Validation**: Comprehensive input sanitization
+- **SQL Injection Prevention**: Parameterized queries
+- **XSS Protection**: Output encoding and validation
+
+## 📈 Performance Features
+
+- **Database Connection Pooling**: HikariCP for optimal performance
+- **Query Optimization**: Efficient JPA queries
+- **Caching**: Strategic caching implementation
+- **Performance Monitoring**: Real-time execution time tracking
+- **Resource Management**: Optimized resource utilization
+
+## 🚧 Implementation Challenges & Solutions
+
+### 1. Circular Reference in JSON Serialization
+**Challenge**: JPA entities with bidirectional relationships caused JSON serialization issues
+**Solution**: Implemented `@JsonIgnore` annotations to prevent circular references
+
+### 2. Password Authentication
+**Challenge**: Plain text password comparison in authentication services
+**Solution**: Integrated BCrypt password encoder for secure password verification
+
+### 3. Database Migration from H2 to MySQL
+**Challenge**: Reserved keyword conflicts and schema differences
+**Solution**: Renamed conflicting columns and updated entity mappings
+
+### 4. Test Data Management
+**Challenge**: Maintaining clean test environment
+**Solution**: Implemented conditional data initialization and cleanup scripts
+
+## 🔮 Future Improvements
+
+### Planned Enhancements
+1. **Email Notifications**: Integration with email service providers
+2. **File Upload**: Support for document and assignment submissions
+3. **Advanced Reporting**: Enhanced analytics and reporting features
+4. **Mobile Application**: Native mobile app development
+5. **Real-time Chat**: Student-instructor communication system
+6. **Calendar Integration**: Course scheduling and calendar management
+7. **Payment Integration**: Course fee management system
+8. **Multi-language Support**: Internationalization features
+
+### Technical Improvements
+1. **Microservices Architecture**: Service decomposition for scalability
+2. **Container Orchestration**: Kubernetes deployment support
+3. **Event-Driven Architecture**: Message queue integration
+4. **Advanced Caching**: Redis integration for performance
+5. **API Gateway**: Centralized API management
+6. **Monitoring & Logging**: ELK stack integration
+
+## 📞 Support & Contact
+
+For technical support or questions about the Student Course Management System:
+
+- **Documentation**: See `TECHNICAL_DOCUMENTATION.md` for detailed technical information
+- **API Documentation**: http://localhost:8080/swagger-ui.html
+- **Issues**: Report bugs and feature requests through the project repository
+
+## 📄 License
+
+This project is developed for educational purposes as part of a university course requirement.
+
+---
+
+**🎓 Student Course Management System - A comprehensive solution for educational institution management**

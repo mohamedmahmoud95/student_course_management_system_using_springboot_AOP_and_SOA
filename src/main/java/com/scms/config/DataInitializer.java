@@ -13,6 +13,7 @@ import com.scms.repository.EnrollmentRepository;
 import com.scms.repository.GradeRepository;
 import com.scms.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.CommandLineRunner;
 
 import org.springframework.stereotype.Component;
@@ -40,14 +41,23 @@ public class DataInitializer implements CommandLineRunner {
     
     @Autowired
     private NotificationRepository notificationRepository;
-    
-    // Simple password encoder for development
-    private String encodePassword(String password) {
-        return password; // For development, just return the password as-is
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private boolean isEncodedPassword(String password) {
+        if (password == null) return false;
+        return password.startsWith("$2a$") || password.startsWith("$2b$") || password.startsWith("$2y$");
+    }
+
+    private String encodePasswordIfNeeded(String password) {
+        if (password == null) return null;
+        return isEncodedPassword(password) ? password : passwordEncoder.encode(password);
     }
     
     @Override
     public void run(String... args) throws Exception {
+        migrateExistingPasswordsIfNeeded();
         initializeAdministrators();
         // Only initialize essential admin data for production
         // initializeStudents();
@@ -56,11 +66,31 @@ public class DataInitializer implements CommandLineRunner {
         // initializeGrades();
         // initializeNotifications();
     }
+
+    private void migrateExistingPasswordsIfNeeded() {
+        administratorRepository.findAll().forEach(admin -> {
+            String original = admin.getPassword();
+            String updated = encodePasswordIfNeeded(original);
+            if (updated != null && !updated.equals(original)) {
+                admin.setPassword(updated);
+                administratorRepository.save(admin);
+            }
+        });
+
+        studentRepository.findAll().forEach(student -> {
+            String original = student.getPassword();
+            String updated = encodePasswordIfNeeded(original);
+            if (updated != null && !updated.equals(original)) {
+                student.setPassword(updated);
+                studentRepository.save(student);
+            }
+        });
+    }
     
     private void initializeAdministrators() {
         if (administratorRepository.count() == 0) {
-            Administrator admin1 = new Administrator("أحمد محمود", "ahmed.mahmoud@eng.asu.edu.eg", encodePassword("admin123"));
-            Administrator admin2 = new Administrator("فاطمة علي", "fatima.ali@eng.asu.edu.eg", encodePassword("admin123"));
+            Administrator admin1 = new Administrator("أحمد محمود", "ahmed.mahmoud@eng.asu.edu.eg", encodePasswordIfNeeded("admin123"));
+            Administrator admin2 = new Administrator("فاطمة علي", "fatima.ali@eng.asu.edu.eg", encodePasswordIfNeeded("admin123"));
             
             administratorRepository.save(admin1);
             administratorRepository.save(admin2);
@@ -69,11 +99,11 @@ public class DataInitializer implements CommandLineRunner {
     
     private void initializeStudents() {
         if (studentRepository.count() == 0) {
-            Student student1 = new Student("محمد رسلان", "mohamed.raslan@eng.asu.edu.eg", encodePassword("password123"));
-            Student student2 = new Student("عمر أحمد", "omar.ahmed@eng.asu.edu.eg", encodePassword("password123"));
-            Student student3 = new Student("علي محمد", "ali.mohamed@eng.asu.edu.eg", encodePassword("password123"));
-            Student student4 = new Student("سارة محمود", "sara.mahmoud@eng.asu.edu.eg", encodePassword("password123"));
-            Student student5 = new Student("مريم علي", "maryam.ali@eng.asu.edu.eg", encodePassword("password123"));
+            Student student1 = new Student("محمد رسلان", "mohamed.raslan@eng.asu.edu.eg", encodePasswordIfNeeded("password123"));
+            Student student2 = new Student("عمر أحمد", "omar.ahmed@eng.asu.edu.eg", encodePasswordIfNeeded("password123"));
+            Student student3 = new Student("علي محمد", "ali.mohamed@eng.asu.edu.eg", encodePasswordIfNeeded("password123"));
+            Student student4 = new Student("سارة محمود", "sara.mahmoud@eng.asu.edu.eg", encodePasswordIfNeeded("password123"));
+            Student student5 = new Student("مريم علي", "maryam.ali@eng.asu.edu.eg", encodePasswordIfNeeded("password123"));
             
             studentRepository.save(student1);
             studentRepository.save(student2);
