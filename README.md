@@ -96,7 +96,7 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 ## 🔐 Testing Credentials
 
 ### Admin Access
-- **Email**: admin@test.com
+- **Email**: admin@eng.asu.edu.eg
 - **Password**: admin123
 
 *Note: You may need to create an admin account first using the registration API*
@@ -239,14 +239,6 @@ mvn test
 4. **Advanced Caching**: Redis integration for performance
 5. **API Gateway**: Centralized API management
 6. **Monitoring & Logging**: ELK stack integration
-
-## 📞 Support & Contact
-
-For technical support or questions about the Student Course Management System:
-
-- **Documentation**: See `TECHNICAL_DOCUMENTATION.md` for detailed technical information
-- **API Documentation**: http://localhost:8080/swagger-ui.html
-- **Issues**: Report bugs and feature requests through the project repository
 
 ## 📄 License
 
