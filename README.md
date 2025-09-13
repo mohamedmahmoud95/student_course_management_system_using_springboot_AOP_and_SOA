@@ -1,10 +1,14 @@
 # 🎓 Student Course Management System (SCMS)
 
-## 📋 Project Overview
+##  Project Documentation
+
+https://drive.google.com/drive/folders/1Xw2IM0fb-w6Yv9PB79jIieL8nkZTO5P9?usp=sharing
+
+##  Project Overview
 
 The Student Course Management System (SCMS) is a comprehensive web application designed to manage student enrollments, course offerings, grade tracking, and administrative operations in an educational institution. Built using Spring Boot with a focus on **Aspect-Oriented Programming (AOP)** and **Service-Oriented Architecture (SOA)**, the system provides a robust, scalable, and maintainable solution for educational management.
 
-### 🎯 Key Features
+###  Key Features
 
 - **Student Management**: Registration, authentication, course enrollment, grade viewing
 - **Course Management**: Course creation, capacity management, enrollment tracking
@@ -13,7 +17,7 @@ The Student Course Management System (SCMS) is a comprehensive web application d
 - **RESTful APIs**: Complete API documentation with Swagger
 - **Responsive UI**: Modern Bootstrap-based interface for both admin and student portals
 
-## 🏗️ Architecture Overview
+##   Architecture Overview
 
 ### AOP (Aspect-Oriented Programming) Implementation
 - **LoggingAspect**: Comprehensive method execution logging
@@ -31,7 +35,7 @@ The Student Course Management System (SCMS) is a comprehensive web application d
 - **AdminNotificationService**: Administrative notification system
 - **AdministratorService**: Administrative operations and reporting
 
-## 🛠️ Technology Stack
+##   Technology Stack
 
 ### Backend
 - **Spring Boot 3.5.4**: Main application framework
@@ -52,7 +56,7 @@ The Student Course Management System (SCMS) is a comprehensive web application d
 - **Mockito**: Mocking framework for testing
 - **Spring Boot Test**: Integration testing support
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Java 17 or higher
@@ -93,7 +97,7 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 - **Main Application**: http://localhost:8080
 - **Swagger Documentation**: http://localhost:8080/swagger-ui.html
 
-## 🔐 Testing Credentials
+##  Testing Credentials
 
 ### Admin Access
 - **Email**: admin@eng.asu.edu.eg
@@ -105,7 +109,7 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 - Students can register through the web interface
 - Default password for new students: `password123`
 
-## 📱 Application Features
+##  Application Features
 
 ### Admin Portal
 - **Dashboard**: Overview of system statistics
@@ -122,7 +126,7 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 - **Grades**: View personal grades and GPA
 - **Notifications**: View system notifications
 
-## 🔧 API Documentation
+##  API Documentation
 
 The complete API documentation is available through Swagger UI at:
 **http://localhost:8080/swagger-ui.html**
@@ -162,7 +166,7 @@ The complete API documentation is available through Swagger UI at:
 - `GET /api/grades/student/{id}/gpa` - Calculate student GPA
 - `PUT /api/grades/{id}` - Update grade
 
-## 🧪 Testing
+##  Testing
 
 Run the complete test suite:
 ```bash
@@ -175,7 +179,7 @@ mvn test
 - Service layer tests
 - Integration tests
 
-## 📊 Database Schema
+##  Database Schema
 
 ### Core Entities
 - **Student**: Student information and authentication
@@ -186,7 +190,7 @@ mvn test
 - **Notification**: Student notification system
 - **AdminNotification**: Administrative notification system
 
-## 🔒 Security Features
+##  Security Features
 
 - **Password Encryption**: BCrypt password hashing
 - **Session Management**: Secure session handling
@@ -194,7 +198,7 @@ mvn test
 - **SQL Injection Prevention**: Parameterized queries
 - **XSS Protection**: Output encoding and validation
 
-## 📈 Performance Features
+## � Performance Features
 
 - **Database Connection Pooling**: HikariCP for optimal performance
 - **Query Optimization**: Efficient JPA queries
@@ -202,7 +206,7 @@ mvn test
 - **Performance Monitoring**: Real-time execution time tracking
 - **Resource Management**: Optimized resource utilization
 
-## 🚧 Implementation Challenges & Solutions
+##  Implementation Challenges & Solutions
 
 ### 1. Circular Reference in JSON Serialization
 **Challenge**: JPA entities with bidirectional relationships caused JSON serialization issues
@@ -220,7 +224,7 @@ mvn test
 **Challenge**: Maintaining clean test environment
 **Solution**: Implemented conditional data initialization and cleanup scripts
 
-## 🔮 Future Improvements
+##  Future Improvements
 
 ### Planned Enhancements
 1. **Email Notifications**: Integration with email service providers
@@ -295,12 +299,3 @@ mvn test
 <img width="1470" height="956" alt="Screenshot 2025-08-18 at 12 08 15 pm" src="https://github.com/user-attachments/assets/0600b01c-c717-49e3-a602-b7f2cbb3fc37" />
 
 
-
-
-## 📄 License
-
-This project is developed for educational purposes as part of a university course requirement.
-
----
-
-**🎓 Student Course Management System - A comprehensive solution for educational institution management**
